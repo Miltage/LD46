@@ -26,6 +26,7 @@ class Game extends GameScene {
     private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, ANVIL];
     private var typeIndex:Int;
     private var items:Array<Item>;
+    private var shadows:Graphics;
 
     private var world:B2World;
     private var spawnTime:Float;
@@ -66,6 +67,8 @@ class Game extends GameScene {
         junior.scaleY = 0.5;
         junior.x = width/2;
         junior.y = height - 130;
+
+        shadows = new Graphics(this);
     }
 
     override public function update(dt:Float)
@@ -95,7 +98,8 @@ class Game extends GameScene {
             {
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
-                body.applyTorque(Math.random() * 10 - 5);
+                var amount = (100 - Item.getItemSize(cast(body.getUserData(), Item).getType())) / 2;
+                body.applyTorque(Math.random() * amount - (amount/2));
                 if (!playing)
                 {
                     timer = new Timer(1000);
@@ -107,9 +111,20 @@ class Game extends GameScene {
             }
         }
 
+        shadows.clear();
+        shadows.beginFill(0, 1);
+        shadows.alpha = 0.2;
+
         for (item in items)
         {
             item.update(dt);
+
+            var p = item.getWorldPos();
+            var itemSize = Item.getItemSize(item.getType());
+            var dy = height * 0.9 - p.y;
+            var size = Math.max(1, itemSize * (1 - dy / height * 0.5));
+            shadows.drawEllipse(p.x, height * 0.9, size, size/2, 0, 30);
+
             if (item.isOnFloor(this))
             {
                 Main.itemsJuggled = items.length;

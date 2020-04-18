@@ -73856,6 +73856,7 @@ var me_miltage_Game = function() {
 	junior.x = this.width / 2;
 	junior.posChanged = true;
 	junior.y = this.height - 130;
+	this.shadows = new h2d_Graphics(this);
 };
 $hxClasses["me.miltage.Game"] = me_miltage_Game;
 me_miltage_Game.__name__ = "me.miltage.Game";
@@ -73882,7 +73883,8 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 			if(body != null) {
 				body.setLinearVelocity(new box2D_common_math_B2Vec2(0,0));
 				body.applyImpulse(new box2D_common_math_B2Vec2(Math.random() * 4 - 2,-5),body.getWorldCenter());
-				body.applyTorque(Math.random() * 10 - 5);
+				var amount = (100 - me_miltage_Item.getItemSize((js_Boot.__cast(body.getUserData() , me_miltage_Item)).getType())) / 2;
+				body.applyTorque(Math.random() * amount - amount / 2);
 				if(!this.playing) {
 					this.timer = new haxe_Timer(1000);
 					this.timer.run = function() {
@@ -73892,12 +73894,20 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 				}
 			}
 		}
+		this.shadows.clear();
+		this.shadows.beginFill(0,1);
+		this.shadows.alpha = 0.2;
 		var _g = 0;
 		var _g1 = this.items;
 		while(_g < _g1.length) {
 			var item1 = _g1[_g];
 			++_g;
 			item1.update(dt);
+			var p = item1.getWorldPos();
+			var itemSize = me_miltage_Item.getItemSize(item1.getType());
+			var dy = this.height * 0.9 - p.y;
+			var size = Math.max(1,itemSize * (1 - dy / this.height * 0.5));
+			this.shadows.drawEllipse(p.x,this.height * 0.9,size,size / 2,0,30);
 			if(item1.isOnFloor(this)) {
 				Main.itemsJuggled = this.items.length;
 				this.timer.stop();
@@ -74019,6 +74029,18 @@ var me_miltage_Item = function(type,world,scene,startY) {
 };
 $hxClasses["me.miltage.Item"] = me_miltage_Item;
 me_miltage_Item.__name__ = "me.miltage.Item";
+me_miltage_Item.getItemSize = function(type) {
+	switch(type._hx_index) {
+	case 0:
+		return 20;
+	case 1:
+		return 80;
+	case 2:
+		return 30;
+	case 3:
+		return 60;
+	}
+};
 me_miltage_Item.prototype = {
 	onHit: function() {
 		this.hitTime = 0;
@@ -74050,6 +74072,13 @@ me_miltage_Item.prototype = {
 	}
 	,isOnFloor: function(scene) {
 		return this.body.getWorldCenter().y * 100 > scene.height * 0.75;
+	}
+	,getWorldPos: function() {
+		var pos = this.body.getWorldCenter();
+		return new h2d_col_Point(pos.x * 100,pos.y * 100);
+	}
+	,getType: function() {
+		return this.type;
 	}
 	,getTile: function() {
 		switch(this.type._hx_index) {

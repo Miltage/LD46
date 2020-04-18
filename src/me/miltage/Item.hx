@@ -1,5 +1,6 @@
 package me.miltage;
 
+import h2d.col.Point;
 import box2D.common.math.B2Vec2;
 import hxd.Res;
 import h2d.Tile;
@@ -86,6 +87,17 @@ class Item {
         return (body.getWorldCenter().y * Constants.PPM > scene.height * 0.75);
     }
 
+    public function getWorldPos():Point
+    {
+        var pos = body.getWorldCenter();
+        return new Point(pos.x * Constants.PPM, pos.y * Constants.PPM);
+    }
+
+    public function getType():ItemType
+    {
+        return type;
+    }
+
     private function getTile():Tile
     {
         return switch (type)
@@ -94,6 +106,17 @@ class Item {
             case ANVIL: Res.anvil.toTile();
             case TELEVISION: Res.television.toTile();
             case TOASTER: Res.toaster.toTile();
+        }
+    }
+
+    public static function getItemSize(type:ItemType):Int
+    {
+        return switch (type) {
+            case TOASTER: 30;
+            case TELEVISION: 60;
+            case ANVIL: 80;
+            case CLEAVER: 20;
+            default: 30;
         }
     }
 }

@@ -6,6 +6,7 @@ class Main extends hxd.App {
 
     override function init() {
         
+        hxd.Res.initEmbed();
         // set up initial scene
         var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
         tf.text = "Hello World!";

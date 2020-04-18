@@ -1,5 +1,6 @@
 package me.miltage;
 
+import h2d.Bitmap;
 import me.miltage.Item.ItemType;
 
 import h2d.Graphics;
@@ -22,6 +23,7 @@ class Game extends h2d.Scene {
 
     private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, ANVIL];
     private var typeIndex:Int;
+    private var items:Array<Item>;
 
     private var world:B2World;
     private var spawnTime:Float;
@@ -44,7 +46,8 @@ class Game extends h2d.Scene {
 
         initWorld();
         typeIndex = 0;
-        spawnTime = Constants.SPAWN_TIME;
+        spawnTime = Constants.SPAWN_TIME / 4;
+        items = [];
     }
 
     public function update(dt:Float)
@@ -57,7 +60,8 @@ class Game extends h2d.Scene {
             spawnTime -= dt;
         else
         {
-            var item = new Item(getNextType(), world, width);
+            var item = new Item(getNextType(), world, this);
+            items.push(item);
             spawnTime = Constants.SPAWN_TIME;
         }
 
@@ -70,6 +74,11 @@ class Game extends h2d.Scene {
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
             }
+        }
+
+        for (item in items)
+        {
+            item.update(dt);
         }
     }
 

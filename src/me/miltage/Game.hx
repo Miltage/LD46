@@ -90,6 +90,7 @@ class Game extends GameScene {
             {
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
+                body.applyTorque(Math.random() * 10 - 5);
                 playing = true;
             }
         }

@@ -1,11 +1,12 @@
 import me.miltage.GameScene;
-import h2d.Scene;
 import me.miltage.Title;
 import me.miltage.Game;
+import me.miltage.EndScreen;
 
 enum SceneName {
     TITLE;
     GAME;
+    END;
 }
 
 class Main extends hxd.App {
@@ -17,14 +18,10 @@ class Main extends hxd.App {
     override function init() {
         
         hxd.Res.initEmbed();
-        instance = this;
-
-        // set up initial scene
-        var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
-        tf.text = "Hello World!";
+        instance = this;        
 
         // switch to new scene
-        changeScene(TITLE);
+        changeScene(END);
 
     }
 
@@ -34,6 +31,7 @@ class Main extends hxd.App {
         {
             case TITLE: new Title();
             case GAME: new Game();
+            case END: new EndScreen();
         }
         currentScene = newScene;
         setScene(newScene);

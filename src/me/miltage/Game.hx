@@ -17,9 +17,10 @@ import box2D.dynamics.B2FixtureDef;
 import box2D.collision.B2AABB;
 import box2D.collision.shapes.B2Shape;
 import box2D.collision.shapes.B2PolygonShape;
-import box2D.collision.shapes.B2CircleShape;
 
-class Game extends h2d.Scene {
+using tweenxcore.Tools;
+
+class Game extends GameScene {
 
     private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, ANVIL];
     private var typeIndex:Int;
@@ -60,7 +61,7 @@ class Game extends h2d.Scene {
         junior.y = height - 130;
     }
 
-    public function update(dt:Float)
+    override public function update(dt:Float)
     {
         world.step(1 / 60,  3,  3);
         world.clearForces();
@@ -127,6 +128,7 @@ class Game extends h2d.Scene {
                 if (inside)
                 {
                     body = fixture.getBody();
+                    cast(body.getUserData(), Item).onHit();
                     return false;
                 }
             }

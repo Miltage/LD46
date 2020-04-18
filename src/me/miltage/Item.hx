@@ -11,6 +11,8 @@ import box2D.dynamics.B2FixtureDef;
 import box2D.collision.shapes.B2CircleShape;
 import box2D.dynamics.B2BodyDef;
 
+using tweenxcore.Tools;
+
 enum ItemType {
     CLEAVER;
     ANVIL;
@@ -19,10 +21,12 @@ enum ItemType {
 }
 
 class Item {
+    private static inline var HIT_TIME:Float = 0.2;
 
     private var body:B2Body;
     private var type:ItemType;
     private var sprite:Bitmap;
+    private var hitTime:Float;
 
     public function new(type:ItemType, world:B2World, scene:Scene) {
         this.type = type;
@@ -46,10 +50,18 @@ class Item {
 
         body = world.createBody(bodyDef);
         body.createFixture(fixture);
+        body.setUserData(this);
 
         sprite = new Bitmap(getTile().center(), scene);
         sprite.scaleX = 0.5;
         sprite.scaleY = 0.5;
+
+        hitTime = HIT_TIME;
+    }
+
+    public function onHit():Void
+    {
+        hitTime = 0;
     }
 
     public function update(dt:Float):Void
@@ -58,6 +70,15 @@ class Item {
         sprite.x = pos.x * Constants.PPM;
         sprite.y = pos.y * Constants.PPM;
         sprite.rotation = body.getAngle();
+
+        if (hitTime < HIT_TIME)
+        {
+            hitTime += dt;
+            var rate = hitTime / HIT_TIME;
+            var val = rate.yoyo(Easing.linear).lerp(0.5, 0.58);
+            sprite.scaleX = val;
+            sprite.scaleY = val;
+        }
     }
 
     private function getTile():Tile

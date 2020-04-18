@@ -306,22 +306,37 @@ Main.__name__ = "Main";
 Main.main = function() {
 	new Main();
 };
+Main.getInstance = function() {
+	return Main.instance;
+};
+Main.setCurrentScene = function(scene) {
+	Main.getInstance().changeScene(scene);
+};
 Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
 		hxd_Res.set_loader(new hxd_res_Loader(new hxd_fs_EmbedFileSystem(haxe_Unserializer.run("oy9:anvil.pngty8:room.pngty9:title.pngty14:television.pngty10:radial.pngty11:toaster.pngty10:junior.pngty11:cleaver.pngtg"))));
+		Main.instance = this;
 		var tf = new h2d_Text(hxd_res_DefaultFont.get(),this.s2d);
 		tf.set_text("Hello World!");
-		this.game = new me_miltage_Game();
-		this.title = new me_miltage_Title();
-		this.setScene(this.title);
-		this.currentScene = SceneName.TITLE;
+		this.changeScene(SceneName.TITLE);
+	}
+	,changeScene: function(scene) {
+		var newScene;
+		switch(scene._hx_index) {
+		case 0:
+			newScene = new me_miltage_Title();
+			break;
+		case 1:
+			newScene = new me_miltage_Game();
+			break;
+		}
+		this.currentScene = newScene;
+		this.setScene(newScene);
 	}
 	,update: function(dt) {
-		if(this.currentScene == SceneName.TITLE) {
-			this.title.update(dt);
-		} else if(this.currentScene == SceneName.GAME) {
-			this.game.update(dt);
+		if(this.currentScene != null) {
+			this.currentScene.update(dt);
 		}
 	}
 	,__class__: Main
@@ -1090,7 +1105,6 @@ box2D_collision_B2ContactID.prototype = {
 		return this._key;
 	}
 	,__class__: box2D_collision_B2ContactID
-	,__properties__: {set_key:"set_key",get_key:"get_key"}
 };
 var box2D_collision_Features = function() {
 	this._flip = 0;
@@ -1134,7 +1148,6 @@ box2D_collision_Features.prototype = {
 		return value;
 	}
 	,__class__: box2D_collision_Features
-	,__properties__: {set_flip:"set_flip",get_flip:"get_flip",set_incidentVertex:"set_incidentVertex",get_incidentVertex:"get_incidentVertex",set_incidentEdge:"set_incidentEdge",get_incidentEdge:"get_incidentEdge",set_referenceEdge:"set_referenceEdge",get_referenceEdge:"get_referenceEdge"}
 };
 var box2D_collision_B2Collision = function() { };
 $hxClasses["box2D.collision.B2Collision"] = box2D_collision_B2Collision;
@@ -3963,7 +3976,6 @@ box2D_common_B2Color.prototype = {
 		return this._r << 16 | this._g << 8 | this._b;
 	}
 	,__class__: box2D_common_B2Color
-	,__properties__: {get_color:"get_color",set_b:"set_b",set_g:"set_g",set_r:"set_r"}
 };
 var box2D_common_B2Settings = function() { };
 $hxClasses["box2D.common.B2Settings"] = box2D_common_B2Settings;
@@ -4083,7 +4095,6 @@ box2D_common_math_B2Mat33.prototype = {
 var box2D_common_math_B2Math = function() { };
 $hxClasses["box2D.common.math.B2Math"] = box2D_common_math_B2Math;
 box2D_common_math_B2Math.__name__ = "box2D.common.math.B2Math";
-box2D_common_math_B2Math.__properties__ = {get_MAX_VALUE:"get_MAX_VALUE",get_MIN_VALUE:"get_MIN_VALUE"};
 box2D_common_math_B2Math.isValid = function(x) {
 	if(isNaN(x) || x == -Infinity || x == Infinity) {
 		return false;
@@ -14924,7 +14935,6 @@ h2d_Object.prototype = {
 	,constraintSize: function(maxWidth,maxHeight) {
 	}
 	,__class__: h2d_Object
-	,__properties__: {set_filter:"set_filter",set_visible:"set_visible",set_rotation:"set_rotation",set_scaleY:"set_scaleY",set_scaleX:"set_scaleX",set_y:"set_y",set_x:"set_x",get_numChildren:"get_numChildren"}
 };
 var h2d_Drawable = function(parent) {
 	h2d_Object.call(this,parent);
@@ -15086,7 +15096,6 @@ h2d_Drawable.prototype = $extend(h2d_Object.prototype,{
 		return;
 	}
 	,__class__: h2d_Drawable
-	,__properties__: $extend(h2d_Object.prototype.__properties__,{set_colorAdd:"set_colorAdd",get_colorAdd:"get_colorAdd",set_colorMatrix:"set_colorMatrix",get_colorMatrix:"get_colorMatrix",set_colorKey:"set_colorKey",set_tileWrap:"set_tileWrap"})
 });
 var h2d_Bitmap = function(tile,parent) {
 	h2d_Drawable.call(this,parent);
@@ -15159,7 +15168,6 @@ h2d_Bitmap.prototype = $extend(h2d_Drawable.prototype,{
 		this.tile.height = oh;
 	}
 	,__class__: h2d_Bitmap
-	,__properties__: $extend(h2d_Drawable.prototype.__properties__,{set_height:"set_height",set_width:"set_width",set_tile:"set_tile"})
 });
 var h2d_BlendMode = $hxEnums["h2d.BlendMode"] = { __ename__ : true, __constructs__ : ["None","Alpha","Add","AlphaAdd","SoftAdd","Multiply","AlphaMultiply","Erase","Screen","Sub","Max","Min"]
 	,None: {_hx_index:0,__enum__:"h2d.BlendMode",toString:$estr}
@@ -17170,7 +17178,6 @@ hxd_Interactive.__name__ = "hxd.Interactive";
 hxd_Interactive.__isInterface__ = true;
 hxd_Interactive.prototype = {
 	__class__: hxd_Interactive
-	,__properties__: {set_cursor:"set_cursor"}
 };
 var h2d_Interactive = function(width,height,parent,shape) {
 	this.shapeY = 0;
@@ -17428,7 +17435,6 @@ h2d_Interactive.prototype = $extend(h2d_Drawable.prototype,{
 	,onTextInput: function(e) {
 	}
 	,__class__: h2d_Interactive
-	,__properties__: $extend(h2d_Drawable.prototype.__properties__,{set_cursor:"set_cursor"})
 });
 var h2d_Layers = function(parent) {
 	h2d_Object.call(this,parent);
@@ -17788,7 +17794,6 @@ h2d_Mask.prototype = $extend(h2d_Object.prototype,{
 		}
 	}
 	,__class__: h2d_Mask
-	,__properties__: $extend(h2d_Object.prototype.__properties__,{set_scrollY:"set_scrollY",set_scrollX:"set_scrollX"})
 });
 var h3d_impl_RenderContext = function() {
 	this.engine = h3d_Engine.CURRENT;
@@ -19727,7 +19732,6 @@ h2d_Scene.prototype = $extend(h2d_Layers.prototype,{
 		return new h2d_Bitmap(target);
 	}
 	,__class__: h2d_Scene
-	,__properties__: $extend(h2d_Layers.prototype.__properties__,{set_renderer:"set_renderer",get_renderer:"get_renderer",set_defaultSmooth:"set_defaultSmooth",get_defaultSmooth:"get_defaultSmooth",set_scaleMode:"set_scaleMode",set_zoom:"set_zoom",get_zoom:"get_zoom",get_mouseY:"get_mouseY",get_mouseX:"get_mouseX"})
 });
 var h2d_Align = $hxEnums["h2d.Align"] = { __ename__ : true, __constructs__ : ["Left","Right","Center","MultilineRight","MultilineCenter"]
 	,Left: {_hx_index:0,__enum__:"h2d.Align",toString:$estr}
@@ -20271,7 +20275,6 @@ h2d_Text.prototype = $extend(h2d_Drawable.prototype,{
 		this.addBounds(relativeTo,out,x,y,w,h);
 	}
 	,__class__: h2d_Text
-	,__properties__: $extend(h2d_Drawable.prototype.__properties__,{set_lineSpacing:"set_lineSpacing",set_letterSpacing:"set_letterSpacing",set_textAlign:"set_textAlign",get_textHeight:"get_textHeight",get_textWidth:"get_textWidth",set_maxWidth:"set_maxWidth",set_textColor:"set_textColor",set_text:"set_text",set_font:"set_font"})
 });
 var h2d_Tile = function(tex,x,y,w,h,dx,dy) {
 	if(dy == null) {
@@ -20615,7 +20618,6 @@ h2d_Tile.prototype = {
 		this.innerTex.uploadBitmap(bmp);
 	}
 	,__class__: h2d_Tile
-	,__properties__: {get_iheight:"get_iheight",get_iwidth:"get_iwidth",get_iy:"get_iy",get_ix:"get_ix"}
 };
 var h2d_TileLayerContent = function() {
 	h3d_prim_Primitive.call(this);
@@ -22971,7 +22973,6 @@ h2d_col_Bounds.prototype = {
 		return "{" + Std.string(new h2d_col_Point(this.xMin,this.yMin)) + "," + Std.string(new h2d_col_Point(this.xMax - this.xMin,this.yMax - this.yMin)) + "}";
 	}
 	,__class__: h2d_col_Bounds
-	,__properties__: {set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_y:"set_y",get_y:"get_y",set_x:"set_x",get_x:"get_x"}
 };
 var h2d_col_Collider = function() { };
 $hxClasses["h2d.col.Collider"] = h2d_col_Collider;
@@ -23235,7 +23236,6 @@ h2d_col_IBounds.prototype = {
 		return "{" + Std.string(new h2d_col_IPoint(this.xMin,this.yMin)) + "," + Std.string(new h2d_col_IPoint(this.xMax - this.xMin,this.yMax - this.yMin)) + "}";
 	}
 	,__class__: h2d_col_IBounds
-	,__properties__: {set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_y:"set_y",get_y:"get_y",set_x:"set_x",get_x:"get_x"}
 };
 var h2d_col_IPoint = function(x,y) {
 	if(y == null) {
@@ -23580,7 +23580,6 @@ h2d_filter_Filter.prototype = {
 		return input;
 	}
 	,__class__: h2d_filter_Filter
-	,__properties__: {set_enable:"set_enable",get_enable:"get_enable"}
 };
 var h3d_BufferFlag = $hxEnums["h3d.BufferFlag"] = { __ename__ : true, __constructs__ : ["Dynamic","Triangles","Quads","Managed","RawFormat","NoAlloc","UniformBuffer"]
 	,Dynamic: {_hx_index:0,__enum__:"h3d.BufferFlag",toString:$estr}
@@ -24853,7 +24852,6 @@ h3d_Engine.prototype = {
 		return Math.ceil(this.realFps * 100) / 100;
 	}
 	,__class__: h3d_Engine
-	,__properties__: {get_fps:"get_fps",set_fullScreen:"set_fullScreen",set_debug:"set_debug"}
 };
 var h3d_Indexes = function(count,is32) {
 	if(is32 == null) {
@@ -26088,7 +26086,6 @@ h3d_Matrix.prototype = {
 		}
 	}
 	,__class__: h3d_Matrix
-	,__properties__: {set_tz:"set_tz",get_tz:"get_tz",set_ty:"set_ty",get_ty:"get_ty",set_tx:"set_tx",get_tx:"get_tx"}
 };
 var h3d_Quat = function(x,y,z,w) {
 	if(w == null) {
@@ -26784,7 +26781,6 @@ h3d_Vector.prototype = {
 		return new h3d_Vector(h,s,l,this.w);
 	}
 	,__class__: h3d_Vector
-	,__properties__: {set_a:"set_a",get_a:"get_a",set_b:"set_b",get_b:"get_b",set_g:"set_g",get_g:"get_g",set_r:"set_r",get_r:"get_r"}
 };
 var h3d_anim_AnimatedObject = function(name) {
 	this.objectName = name;
@@ -29047,7 +29043,6 @@ h3d_col_Bounds.prototype = {
 		return new h3d_col_Sphere((this.xMin + this.xMax) * 0.5,(this.yMin + this.yMax) * 0.5,(this.zMin + this.zMax) * 0.5,Math.sqrt(dx * dx + dy * dy + dz * dz) * 0.5);
 	}
 	,__class__: h3d_col_Bounds
-	,__properties__: {set_zSize:"set_zSize",get_zSize:"get_zSize",set_ySize:"set_ySize",get_ySize:"get_ySize",set_xSize:"set_xSize",get_xSize:"get_xSize"}
 };
 var h3d_col_OptimizedCollider = function(a,b) {
 	this.a = a;
@@ -34706,7 +34701,6 @@ hxd_impl_AnyProps.prototype = {
 	,refreshProps: function() {
 	}
 	,__class__: hxd_impl_AnyProps
-	,__properties__: {set_props:"set_props"}
 };
 var h3d_mat_BaseMaterial = function(shader) {
 	if(shader != null) {
@@ -34795,7 +34789,6 @@ h3d_mat_BaseMaterial.prototype = $extend(hxd_impl_AnyProps.prototype,{
 		return m;
 	}
 	,__class__: h3d_mat_BaseMaterial
-	,__properties__: $extend(hxd_impl_AnyProps.prototype.__properties__,{get_mainPass:"get_mainPass"})
 });
 var h3d_mat_Face = $hxEnums["h3d.mat.Face"] = { __ename__ : true, __constructs__ : ["None","Back","Front","Both"]
 	,None: {_hx_index:0,__enum__:"h3d.mat.Face",toString:$estr}
@@ -34886,7 +34879,6 @@ h3d_mat_TextureFlags.__empty_constructs__ = [h3d_mat_TextureFlags.Target,h3d_mat
 var h3d_mat_Defaults = function() { };
 $hxClasses["h3d.mat.Defaults"] = h3d_mat_Defaults;
 h3d_mat_Defaults.__name__ = "h3d.mat.Defaults";
-h3d_mat_Defaults.__properties__ = {set_shadowShader:"set_shadowShader",get_shadowShader:"get_shadowShader"};
 h3d_mat_Defaults.get_shadowShader = function() {
 	var s = h3d_mat_Defaults.shadowShader;
 	if(s == null) {
@@ -35207,7 +35199,6 @@ h3d_mat_Material.prototype = $extend(h3d_mat_BaseMaterial.prototype,{
 		}
 	}
 	,__class__: h3d_mat_Material
-	,__properties__: $extend(h3d_mat_BaseMaterial.prototype.__properties__,{set_blendMode:"set_blendMode",set_specularPower:"set_specularPower",get_specularPower:"get_specularPower",set_specularAmount:"set_specularAmount",get_specularAmount:"get_specularAmount",set_color:"set_color",get_color:"get_color",set_normalMap:"set_normalMap",get_normalMap:"get_normalMap",set_specularTexture:"set_specularTexture",get_specularTexture:"get_specularTexture",set_texture:"set_texture",get_texture:"get_texture",set_staticShadows:"set_staticShadows",set_receiveShadows:"set_receiveShadows",set_castShadows:"set_castShadows",set_shadows:"set_shadows",get_shadows:"get_shadows"})
 });
 var h3d_mat_MaterialDatabase = function() {
 	this.db = new haxe_ds_StringMap();
@@ -35797,7 +35788,6 @@ h3d_mat_Pass.prototype = {
 		this.set_reserved((this.bits >> 29 & 1) != 0);
 	}
 	,__class__: h3d_mat_Pass
-	,__properties__: {set_reserved:"set_reserved",set_wireframe:"set_wireframe",set_blendAlphaOp:"set_blendAlphaOp",set_blendOp:"set_blendOp",set_blendAlphaDst:"set_blendAlphaDst",set_blendAlphaSrc:"set_blendAlphaSrc",set_blendDst:"set_blendDst",set_blendSrc:"set_blendSrc",set_depthTest:"set_depthTest",set_depthWrite:"set_depthWrite",set_culling:"set_culling",set_batchMode:"set_batchMode",set_isStatic:"set_isStatic",set_dynamicParameters:"set_dynamicParameters",set_enableLights:"set_enableLights"}
 };
 var h3d_mat_Stencil = function() {
 	this.opBits = 0;
@@ -35943,7 +35933,6 @@ h3d_mat_Stencil.prototype = {
 		this.set_reference(this.maskBits >> 16 & 255);
 	}
 	,__class__: h3d_mat_Stencil
-	,__properties__: {set_backDPfail:"set_backDPfail",set_backSTfail:"set_backSTfail",set_backPass:"set_backPass",set_backTest:"set_backTest",set_frontDPfail:"set_frontDPfail",set_frontSTfail:"set_frontSTfail",set_frontPass:"set_frontPass",set_frontTest:"set_frontTest",set_reference:"set_reference",set_writeMask:"set_writeMask",set_readMask:"set_readMask"}
 };
 var haxe_ds_IntMap = function() {
 	this.h = { };
@@ -36525,7 +36514,6 @@ h3d_mat_Texture.prototype = {
 		return pix;
 	}
 	,__class__: h3d_mat_Texture
-	,__properties__: {get_layerCount:"get_layerCount",set_wrap:"set_wrap",set_filter:"set_filter",set_mipMap:"set_mipMap",set_lastFrame:"set_lastFrame",get_lastFrame:"get_lastFrame"}
 };
 var h3d_mat_TextureArray = function(w,h,layers,flags,format) {
 	this.layers = layers;
@@ -36668,7 +36656,6 @@ h3d_pass_ScreenFx.prototype = {
 	,dispose: function() {
 	}
 	,__class__: h3d_pass_ScreenFx
-	,__properties__: {get_engine:"get_engine"}
 };
 var h3d_pass_Blur = function(radius,gain,linear,quality) {
 	if(quality == null) {
@@ -36893,7 +36880,6 @@ h3d_pass_Blur.prototype = $extend(h3d_pass_ScreenFx.prototype,{
 		output.depthBuffer = outDepth;
 	}
 	,__class__: h3d_pass_Blur
-	,__properties__: $extend(h3d_pass_ScreenFx.prototype.__properties__,{set_quality:"set_quality",set_linear:"set_linear",set_gain:"set_gain",set_radius:"set_radius"})
 });
 var hxsl_Shader = function() {
 	this.priority = 0;
@@ -37045,7 +37031,6 @@ h3d_shader_ScreenShader.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_ScreenShader
-	,__properties__: {set_flipY:"set_flipY",get_flipY:"get_flipY"}
 });
 var h3d_pass__$Border_BorderShader = function() {
 	this.color__ = new h3d_Vector();
@@ -37089,7 +37074,6 @@ h3d_pass__$Border_BorderShader.prototype = $extend(h3d_shader_ScreenShader.proto
 		return s;
 	}
 	,__class__: h3d_pass__$Border_BorderShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_color:"set_color",get_color:"get_color"})
 });
 var h3d_pass_Border = function(width,height,size) {
 	if(size == null) {
@@ -37502,7 +37486,6 @@ h3d_pass__$Copy_ArrayCopyShader.prototype = $extend(h3d_shader_ScreenShader.prot
 		return s;
 	}
 	,__class__: h3d_pass__$Copy_ArrayCopyShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_layer:"set_layer",get_layer:"get_layer",set_texture:"set_texture",get_texture:"get_texture"})
 });
 var h3d_pass_ArrayCopy = function() {
 	h3d_pass_ScreenFx.call(this,new h3d_pass__$Copy_ArrayCopyShader());
@@ -37595,7 +37578,6 @@ h3d_pass__$Copy_CopyShader.prototype = $extend(h3d_shader_ScreenShader.prototype
 		return s;
 	}
 	,__class__: h3d_pass__$Copy_CopyShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_texture:"set_texture",get_texture:"get_texture"})
 });
 var h3d_pass_Copy = function() {
 	h3d_pass_ScreenFx.call(this,new h3d_pass__$Copy_CopyShader());
@@ -37696,7 +37678,6 @@ h3d_pass__$CubeCopy_CubeCopyShader.prototype = $extend(h3d_shader_ScreenShader.p
 		return s;
 	}
 	,__class__: h3d_pass__$CubeCopy_CubeCopyShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_mat:"set_mat",get_mat:"get_mat",set_texture:"set_texture",get_texture:"get_texture"})
 });
 var h3d_pass_CubeCopy = function() {
 	this.cubeDir = [h3d_Matrix.L([0,0,-1,0,0,-1,0,0,1,0,0,0]),h3d_Matrix.L([0,0,1,0,0,-1,0,0,-1,0,0,0]),h3d_Matrix.L([1,0,0,0,0,0,1,0,0,1,0,0]),h3d_Matrix.L([1,0,0,0,0,0,-1,0,0,-1,0,0]),h3d_Matrix.L([1,0,0,0,0,-1,0,0,0,0,1,0]),h3d_Matrix.L([-1,0,0,0,0,-1,0,0,0,0,-1,0])];
@@ -38050,7 +38031,6 @@ h3d_pass_Default.prototype = $extend(h3d_pass_Base.prototype,{
 		this.manager.globals.map.h[this.pixelSize_id] = v10;
 	}
 	,__class__: h3d_pass_Default
-	,__properties__: {set_globalModelViewInverse:"set_globalModelViewInverse",get_globalModelViewInverse:"get_globalModelViewInverse",set_globalModelView:"set_globalModelView",get_globalModelView:"get_globalModelView",set_pixelSize:"set_pixelSize",get_pixelSize:"get_pixelSize",set_globalTime:"set_globalTime",get_globalTime:"get_globalTime",set_cameraInverseViewProj:"set_cameraInverseViewProj",get_cameraInverseViewProj:"get_cameraInverseViewProj",set_cameraViewProj:"set_cameraViewProj",get_cameraViewProj:"get_cameraViewProj",set_cameraProjFlip:"set_cameraProjFlip",get_cameraProjFlip:"get_cameraProjFlip",set_cameraProjDiag:"set_cameraProjDiag",get_cameraProjDiag:"get_cameraProjDiag",set_cameraPos:"set_cameraPos",get_cameraPos:"get_cameraPos",set_cameraProj:"set_cameraProj",get_cameraProj:"get_cameraProj",set_cameraFar:"set_cameraFar",get_cameraFar:"get_cameraFar",set_cameraNear:"set_cameraNear",get_cameraNear:"get_cameraNear",set_cameraView:"set_cameraView",get_cameraView:"get_cameraView",get_globals:"get_globals"}
 });
 var h3d_pass_Shadows = function(light) {
 	this.pcfScale = 1.0;
@@ -38294,7 +38274,6 @@ h3d_pass_Shadows.prototype = $extend(h3d_pass_Default.prototype,{
 		passes.lastDisc = discQueue;
 	}
 	,__class__: h3d_pass_Shadows
-	,__properties__: $extend(h3d_pass_Default.prototype.__properties__,{set_size:"set_size",set_mode:"set_mode",set_enabled:"set_enabled"})
 });
 var h3d_pass_DirShadowMap = function(light) {
 	this.mergePass = new h3d_pass_ScreenFx(new h3d_shader_MinMaxShader());
@@ -39054,7 +39033,6 @@ h3d_pass__$HardwarePick_FixedColor.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_pass__$HardwarePick_FixedColor
-	,__properties__: {set_viewport:"set_viewport",get_viewport:"get_viewport",set_colorID:"set_colorID",get_colorID:"get_colorID"}
 });
 var h3d_pass_HardwarePick = function() {
 	this.pickedIndex = -1;
@@ -43300,7 +43278,6 @@ h3d_scene_Object.prototype = {
 		return new hxd_impl_ArrayIterator_$h3d_$scene_$Object(this.children);
 	}
 	,__class__: h3d_scene_Object
-	,__properties__: {set_posChanged:"set_posChanged",get_posChanged:"get_posChanged",set_cullingColliderInherited:"set_cullingColliderInherited",get_cullingColliderInherited:"get_cullingColliderInherited",set_cullingCollider:"set_cullingCollider",set_lightCameraCenter:"set_lightCameraCenter",get_lightCameraCenter:"get_lightCameraCenter",set_ignoreParentTransform:"set_ignoreParentTransform",get_ignoreParentTransform:"get_ignoreParentTransform",set_allowSerialize:"set_allowSerialize",get_allowSerialize:"get_allowSerialize",set_ignoreCollide:"set_ignoreCollide",get_ignoreCollide:"get_ignoreCollide",set_ignoreBounds:"set_ignoreBounds",get_ignoreBounds:"get_ignoreBounds",set_inheritCulled:"set_inheritCulled",get_inheritCulled:"get_inheritCulled",set_alwaysSync:"set_alwaysSync",get_alwaysSync:"get_alwaysSync",set_culled:"set_culled",get_culled:"get_culled",set_defaultTransform:"set_defaultTransform",set_followPositionOnly:"set_followPositionOnly",get_followPositionOnly:"get_followPositionOnly",set_follow:"set_follow",set_allocated:"set_allocated",get_allocated:"get_allocated",set_visible:"set_visible",get_visible:"get_visible",set_scaleZ:"set_scaleZ",set_scaleY:"set_scaleY",set_scaleX:"set_scaleX",set_z:"set_z",set_y:"set_y",set_x:"set_x",get_numChildren:"get_numChildren"}
 };
 var h3d_scene_Mesh = function(primitive,material,parent) {
 	h3d_scene_Object.call(this,parent);
@@ -43412,7 +43389,6 @@ h3d_scene_Mesh.prototype = $extend(h3d_scene_Object.prototype,{
 		return this.primitive = prim;
 	}
 	,__class__: h3d_scene_Mesh
-	,__properties__: $extend(h3d_scene_Object.prototype.__properties__,{set_primitive:"set_primitive"})
 });
 var h3d_scene_Graphics = function(parent) {
 	this.lineSize = 0.;
@@ -43807,7 +43783,6 @@ h3d_scene_Graphics.prototype = $extend(h3d_scene_Mesh.prototype,{
 		this.curZ = z;
 	}
 	,__class__: h3d_scene_Graphics
-	,__properties__: $extend(h3d_scene_Mesh.prototype.__properties__,{set_is3D:"set_is3D"})
 });
 var h3d_scene_Interactive = function(shape,parent) {
 	this.hitPoint = new h3d_Vector();
@@ -43968,7 +43943,6 @@ h3d_scene_Interactive.prototype = $extend(h3d_scene_Object.prototype,{
 	,onTextInput: function(e) {
 	}
 	,__class__: h3d_scene_Interactive
-	,__properties__: $extend(h3d_scene_Object.prototype.__properties__,{set_cursor:"set_cursor"})
 });
 var h3d_scene_Light = function(shader,parent) {
 	this.priority = 0;
@@ -44002,7 +43976,6 @@ h3d_scene_Light.prototype = $extend(h3d_scene_Object.prototype,{
 		return null;
 	}
 	,__class__: h3d_scene_Light
-	,__properties__: $extend(h3d_scene_Object.prototype.__properties__,{set_enableSpecular:"set_enableSpecular",get_enableSpecular:"get_enableSpecular",set_color:"set_color",get_color:"get_color"})
 });
 var h3d_scene_LightSystem = function() {
 	this.drawPasses = 0;
@@ -45397,7 +45370,6 @@ h3d_scene_Scene.prototype = $extend(h3d_scene_Object.prototype,{
 		throw new js__$Boot_HaxeError("You need -lib hxbit to serialize the scene data");
 	}
 	,__class__: h3d_scene_Scene
-	,__properties__: $extend(h3d_scene_Object.prototype.__properties__,{set_renderer:"set_renderer"})
 });
 var h3d_scene_Joint = function(skin,j) {
 	h3d_scene_Object.call(this,null);
@@ -46106,7 +46078,6 @@ h3d_scene_fwd_LightSystem.prototype = $extend(h3d_scene_LightSystem.prototype,{
 		return shaders;
 	}
 	,__class__: h3d_scene_fwd_LightSystem
-	,__properties__: {set_additiveLighting:"set_additiveLighting",get_additiveLighting:"get_additiveLighting"}
 });
 var h3d_scene_fwd_DepthPass = function() {
 	this.enableSky = false;
@@ -46190,7 +46161,6 @@ h3d_scene_fwd_Renderer.prototype = $extend(h3d_scene_Renderer.prototype,{
 		this.renderPass(this.defaultPass,this.get("additive"));
 	}
 	,__class__: h3d_scene_fwd_Renderer
-	,__properties__: $extend(h3d_scene_Renderer.prototype.__properties__,{get_def:"get_def"})
 });
 var h3d_shader_AmbientLight = function() {
 	hxsl_Shader.call(this);
@@ -46229,7 +46199,6 @@ h3d_shader_AmbientLight.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_AmbientLight
-	,__properties__: {set_additive:"set_additive",get_additive:"get_additive"}
 });
 var h3d_shader_Base2d = function() {
 	this.viewport__ = new h3d_Vector();
@@ -46411,7 +46380,6 @@ h3d_shader_Base2d.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_Base2d
-	,__properties__: {set_viewport:"set_viewport",get_viewport:"get_viewport",set_halfPixelInverse:"set_halfPixelInverse",get_halfPixelInverse:"get_halfPixelInverse",set_pixelAlign:"set_pixelAlign",get_pixelAlign:"get_pixelAlign",set_killAlpha:"set_killAlpha",get_killAlpha:"get_killAlpha",set_uvPos:"set_uvPos",get_uvPos:"get_uvPos",set_hasUVPos:"set_hasUVPos",get_hasUVPos:"get_hasUVPos",set_filterMatrixB:"set_filterMatrixB",get_filterMatrixB:"get_filterMatrixB",set_filterMatrixA:"set_filterMatrixA",get_filterMatrixA:"get_filterMatrixA",set_absoluteMatrixB:"set_absoluteMatrixB",get_absoluteMatrixB:"get_absoluteMatrixB",set_absoluteMatrixA:"set_absoluteMatrixA",get_absoluteMatrixA:"get_absoluteMatrixA",set_color:"set_color",get_color:"get_color",set_isRelative:"set_isRelative",get_isRelative:"get_isRelative",set_texture:"set_texture",get_texture:"get_texture",set_zValue:"set_zValue",get_zValue:"get_zValue"}
 });
 var h3d_shader_BaseMesh = function() {
 	this.specularColor__ = new h3d_Vector();
@@ -46522,7 +46490,6 @@ h3d_shader_BaseMesh.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_BaseMesh
-	,__properties__: {set_specularColor:"set_specularColor",get_specularColor:"get_specularColor",set_specularAmount:"set_specularAmount",get_specularAmount:"get_specularAmount",set_specularPower:"set_specularPower",get_specularPower:"get_specularPower",set_color:"set_color",get_color:"get_color"}
 });
 var h3d_shader_Blur = function() {
 	this.cubeDir__ = new h3d_Matrix();
@@ -46746,7 +46713,6 @@ h3d_shader_Blur.prototype = $extend(h3d_shader_ScreenShader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_Blur
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_cubeDir:"set_cubeDir",get_cubeDir:"get_cubeDir",set_cubeTexture:"set_cubeTexture",get_cubeTexture:"get_cubeTexture",set_isCube:"set_isCube",get_isCube:"get_isCube",set_normalTexture:"set_normalTexture",get_normalTexture:"get_normalTexture",set_hasNormal:"set_hasNormal",get_hasNormal:"get_hasNormal",set_isDepthDependant:"set_isDepthDependant",get_isDepthDependant:"get_isDepthDependant",set_fixedColor:"set_fixedColor",get_fixedColor:"get_fixedColor",set_smoothFixedColor:"set_smoothFixedColor",get_smoothFixedColor:"get_smoothFixedColor",set_hasFixedColor:"set_hasFixedColor",get_hasFixedColor:"get_hasFixedColor",set_pixel:"set_pixel",get_pixel:"get_pixel",set_offsets:"set_offsets",get_offsets:"get_offsets",set_values:"set_values",get_values:"get_values",set_isDepth:"set_isDepth",get_isDepth:"get_isDepth",set_Quality:"set_Quality",get_Quality:"get_Quality",set_depthTexture:"set_depthTexture",get_depthTexture:"get_depthTexture",set_texture:"set_texture",get_texture:"get_texture",set_cameraInverseViewProj:"set_cameraInverseViewProj",get_cameraInverseViewProj:"get_cameraInverseViewProj"})
 });
 var h3d_shader_ShaderBuffers = function(s) {
 	this.globals = new Float32Array(s.globalsSize << 2);
@@ -46842,7 +46808,6 @@ h3d_shader_ColorAdd.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_ColorAdd
-	,__properties__: {set_color:"set_color",get_color:"get_color"}
 });
 var h3d_shader_ColorKey = function(v) {
 	if(v == null) {
@@ -46886,7 +46851,6 @@ h3d_shader_ColorKey.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_ColorKey
-	,__properties__: {set_colorKey:"set_colorKey",get_colorKey:"get_colorKey"}
 });
 var h3d_shader_ColorMatrix = function(m) {
 	this.matrix__ = new h3d_Matrix();
@@ -46927,7 +46891,6 @@ h3d_shader_ColorMatrix.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_ColorMatrix
-	,__properties__: {set_matrix:"set_matrix",get_matrix:"get_matrix"}
 });
 var h3d_shader_DirShadow = function() {
 	this.poissonDiskVeryHigh__ = [];
@@ -47130,7 +47093,6 @@ h3d_shader_DirShadow.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_DirShadow
-	,__properties__: {set_poissonDiskVeryHigh:"set_poissonDiskVeryHigh",get_poissonDiskVeryHigh:"get_poissonDiskVeryHigh",set_poissonDiskHigh:"set_poissonDiskHigh",get_poissonDiskHigh:"get_poissonDiskHigh",set_poissonDiskLow:"set_poissonDiskLow",get_poissonDiskLow:"get_poissonDiskLow",set_shadowBias:"set_shadowBias",get_shadowBias:"get_shadowBias",set_shadowProj:"set_shadowProj",get_shadowProj:"get_shadowProj",set_shadowMapChannel:"set_shadowMapChannel",get_shadowMapChannel:"get_shadowMapChannel",set_shadowMap:"set_shadowMap",get_shadowMap:"get_shadowMap",set_shadowRes:"set_shadowRes",get_shadowRes:"get_shadowRes",set_pcfScale:"set_pcfScale",get_pcfScale:"get_pcfScale",set_pcfQuality:"set_pcfQuality",get_pcfQuality:"get_pcfQuality",set_USE_PCF:"set_USE_PCF",get_USE_PCF:"get_USE_PCF",set_shadowPower:"set_shadowPower",get_shadowPower:"get_shadowPower",set_USE_ESM:"set_USE_ESM",get_USE_ESM:"get_USE_ESM",set_enable:"set_enable",get_enable:"get_enable"}
 });
 var h3d_shader_GenTexture = function() {
 	this.color__ = new h3d_Vector();
@@ -47190,7 +47152,6 @@ h3d_shader_GenTexture.prototype = $extend(h3d_shader_ScreenShader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_GenTexture
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_color:"set_color",get_color:"get_color",set_mode:"set_mode",get_mode:"get_mode"})
 });
 var h3d_shader_LineShader = function(width,lengthScale) {
 	if(lengthScale == null) {
@@ -47253,7 +47214,6 @@ h3d_shader_LineShader.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_LineShader
-	,__properties__: {set_width:"set_width",get_width:"get_width",set_lengthScale:"set_lengthScale",get_lengthScale:"get_lengthScale"}
 });
 var h3d_shader_MinMaxShader = function() {
 	h3d_shader_ScreenShader.call(this);
@@ -47318,7 +47278,6 @@ h3d_shader_MinMaxShader.prototype = $extend(h3d_shader_ScreenShader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_MinMaxShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_isMax:"set_isMax",get_isMax:"get_isMax",set_texB:"set_texB",get_texB:"get_texB",set_texA:"set_texA",get_texA:"get_texA"})
 });
 var h3d_shader_CubeMinMaxShader = function() {
 	this.mat__ = new h3d_Matrix();
@@ -47393,7 +47352,6 @@ h3d_shader_CubeMinMaxShader.prototype = $extend(h3d_shader_ScreenShader.prototyp
 		return s;
 	}
 	,__class__: h3d_shader_CubeMinMaxShader
-	,__properties__: $extend(h3d_shader_ScreenShader.prototype.__properties__,{set_mat:"set_mat",get_mat:"get_mat",set_isMax:"set_isMax",get_isMax:"get_isMax",set_texB:"set_texB",get_texB:"get_texB",set_texA:"set_texA",get_texA:"get_texA"})
 });
 var h3d_shader_NormalMap = function(texture) {
 	hxsl_Shader.call(this);
@@ -47429,7 +47387,6 @@ h3d_shader_NormalMap.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_NormalMap
-	,__properties__: {set_texture:"set_texture",get_texture:"get_texture"}
 });
 var h3d_shader_Shadow = function() {
 	hxsl_Shader.call(this);
@@ -47519,7 +47476,6 @@ h3d_shader_SignedDistanceField.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_SignedDistanceField
-	,__properties__: {set_smoothing:"set_smoothing",get_smoothing:"get_smoothing",set_alphaCutoff:"set_alphaCutoff",get_alphaCutoff:"get_alphaCutoff",set_channel:"set_channel",get_channel:"get_channel"}
 });
 var h3d_shader_SkinBase = function() {
 	this.bonesMatrixes__ = [];
@@ -47575,7 +47531,6 @@ h3d_shader_SkinBase.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_SkinBase
-	,__properties__: {set_bonesMatrixes:"set_bonesMatrixes",get_bonesMatrixes:"get_bonesMatrixes",set_MaxBones:"set_MaxBones",get_MaxBones:"get_MaxBones"}
 });
 var h3d_shader_Skin = function() {
 	h3d_shader_SkinBase.call(this);
@@ -47687,7 +47642,6 @@ h3d_shader_SpecularTexture.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_SpecularTexture
-	,__properties__: {set_texture:"set_texture",get_texture:"get_texture"}
 });
 var h3d_shader_Texture = function(tex) {
 	this.killAlphaThreshold__ = 0;
@@ -47778,7 +47732,6 @@ h3d_shader_Texture.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_Texture
-	,__properties__: {set_texture:"set_texture",get_texture:"get_texture",set_killAlphaThreshold:"set_killAlphaThreshold",get_killAlphaThreshold:"get_killAlphaThreshold",set_specularAlpha:"set_specularAlpha",get_specularAlpha:"get_specularAlpha",set_killAlpha:"set_killAlpha",get_killAlpha:"get_killAlpha",set_additive:"set_additive",get_additive:"get_additive"}
 });
 var h3d_shader_UVDelta = function(dx,dy,sx,sy) {
 	if(sy == null) {
@@ -47864,7 +47817,6 @@ h3d_shader_UVDelta.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_UVDelta
-	,__properties__: {set_uvScale:"set_uvScale",get_uvScale:"get_uvScale",set_uvDelta:"set_uvDelta",get_uvDelta:"get_uvDelta"}
 });
 var h3d_shader_VertexColorAlpha = function() {
 	hxsl_Shader.call(this);
@@ -47903,7 +47855,6 @@ h3d_shader_VertexColorAlpha.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_VertexColorAlpha
-	,__properties__: {set_additive:"set_additive",get_additive:"get_additive"}
 });
 var h3d_shader_VolumeDecal = function(objectWidth,objectHeight) {
 	this.isCentered__ = true;
@@ -48022,7 +47973,6 @@ h3d_shader_VolumeDecal.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: h3d_shader_VolumeDecal
-	,__properties__: {set_isCentered:"set_isCentered",get_isCentered:"get_isCentered",set_tangent:"set_tangent",get_tangent:"get_tangent",set_normal:"set_normal",get_normal:"get_normal",set_scale:"set_scale",get_scale:"get_scale"}
 });
 var haxe_EntryPoint = function() { };
 $hxClasses["haxe.EntryPoint"] = haxe_EntryPoint;
@@ -49739,7 +49689,6 @@ haxe_io_Input.prototype = {
 		return b.getString(0,len,encoding);
 	}
 	,__class__: haxe_io_Input
-	,__properties__: {set_bigEndian:"set_bigEndian"}
 };
 var haxe_io_BytesInput = function(b,pos,len) {
 	if(pos == null) {
@@ -49799,7 +49748,6 @@ haxe_io_BytesInput.prototype = $extend(haxe_io_Input.prototype,{
 		return len;
 	}
 	,__class__: haxe_io_BytesInput
-	,__properties__: $extend(haxe_io_Input.prototype.__properties__,{set_position:"set_position"})
 });
 var haxe_io_Output = function() { };
 $hxClasses["haxe.io.Output"] = haxe_io_Output;
@@ -49866,7 +49814,6 @@ haxe_io_Output.prototype = {
 		this.writeFullBytes(b,0,b.length);
 	}
 	,__class__: haxe_io_Output
-	,__properties__: {set_bigEndian:"set_bigEndian"}
 };
 var haxe_io_BytesOutput = function() {
 	this.b = new haxe_io_BytesBuffer();
@@ -51600,7 +51547,6 @@ hxd_BitmapData.prototype = {
 		return png;
 	}
 	,__class__: hxd_BitmapData
-	,__properties__: {get_height:"get_height",get_width:"get_width"}
 };
 var hxd_Charset = function() {
 	var _gthis = this;
@@ -51864,7 +51810,6 @@ hxd_Event.prototype = {
 var hxd__$FloatBuffer_Float32Expand_$Impl_$ = {};
 $hxClasses["hxd._FloatBuffer.Float32Expand_Impl_"] = hxd__$FloatBuffer_Float32Expand_$Impl_$;
 hxd__$FloatBuffer_Float32Expand_$Impl_$.__name__ = "hxd._FloatBuffer.Float32Expand_Impl_";
-hxd__$FloatBuffer_Float32Expand_$Impl_$.__properties__ = {set_length:"set_length",get_length:"get_length"};
 hxd__$FloatBuffer_Float32Expand_$Impl_$._new = function(length) {
 	var this1 = { pos : 0, array : new Float32Array(new ArrayBuffer(length << 2))};
 	return this1;
@@ -51931,7 +51876,6 @@ hxd__$FloatBuffer_InnerIterator.prototype = {
 var hxd__$FloatBuffer_FloatBuffer_$Impl_$ = {};
 $hxClasses["hxd._FloatBuffer.FloatBuffer_Impl_"] = hxd__$FloatBuffer_FloatBuffer_$Impl_$;
 hxd__$FloatBuffer_FloatBuffer_$Impl_$.__name__ = "hxd._FloatBuffer.FloatBuffer_Impl_";
-hxd__$FloatBuffer_FloatBuffer_$Impl_$.__properties__ = {get_length:"get_length"};
 hxd__$FloatBuffer_FloatBuffer_$Impl_$._new = function(length) {
 	if(length == null) {
 		length = 0;
@@ -52010,7 +51954,6 @@ hxd__$IndexBuffer_InnerIterator.prototype = {
 var hxd__$IndexBuffer_IndexBuffer_$Impl_$ = {};
 $hxClasses["hxd._IndexBuffer.IndexBuffer_Impl_"] = hxd__$IndexBuffer_IndexBuffer_$Impl_$;
 hxd__$IndexBuffer_IndexBuffer_$Impl_$.__name__ = "hxd._IndexBuffer.IndexBuffer_Impl_";
-hxd__$IndexBuffer_IndexBuffer_$Impl_$.__properties__ = {get_length:"get_length"};
 hxd__$IndexBuffer_IndexBuffer_$Impl_$._new = function(length) {
 	if(length == null) {
 		length = 0;
@@ -52224,7 +52167,6 @@ hxd_Key.getKeyName = function(keyCode) {
 var hxd_Math = function() { };
 $hxClasses["hxd.Math"] = hxd_Math;
 hxd_Math.__name__ = "hxd.Math";
-hxd_Math.__properties__ = {get_NaN:"get_NaN",get_NEGATIVE_INFINITY:"get_NEGATIVE_INFINITY",get_POSITIVE_INFINITY:"get_POSITIVE_INFINITY"};
 hxd_Math.get_POSITIVE_INFINITY = function() {
 	return Infinity;
 };
@@ -53152,12 +53094,10 @@ hxd_Pixels.prototype = {
 		return p;
 	}
 	,__class__: hxd_Pixels
-	,__properties__: {set_innerFormat:"set_innerFormat",get_format:"get_format"}
 };
 var hxd_Res = function() { };
 $hxClasses["hxd.Res"] = hxd_Res;
 hxd_Res.__name__ = "hxd.Res";
-hxd_Res.__properties__ = {set_loader:"set_loader",get_loader:"get_loader"};
 hxd_Res.load = function(name) {
 	return hxd_Res.get_loader().load(name);
 };
@@ -53611,7 +53551,6 @@ hxd_SceneEvents.prototype = {
 		}
 	}
 	,__class__: hxd_SceneEvents
-	,__properties__: {set_defaultCursor:"set_defaultCursor"}
 };
 var hxd_Platform = $hxEnums["hxd.Platform"] = { __ename__ : true, __constructs__ : ["IOS","Android","WebGL","PC","Console","FlashPlayer"]
 	,IOS: {_hx_index:0,__enum__:"hxd.Platform",toString:$estr}
@@ -53651,7 +53590,6 @@ js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 var hxd_Timer = function() { };
 $hxClasses["hxd.Timer"] = hxd_Timer;
 hxd_Timer.__name__ = "hxd.Timer";
-hxd_Timer.__properties__ = {set_tmod:"set_tmod",get_tmod:"get_tmod"};
 hxd_Timer.update = function() {
 	hxd_Timer.frameCount++;
 	var newTime = Date.now() / 1000;
@@ -54057,12 +53995,10 @@ hxd_Window.prototype = {
 		return window.document.title = t;
 	}
 	,__class__: hxd_Window
-	,__properties__: {set_displayMode:"set_displayMode",get_displayMode:"get_displayMode",set_title:"set_title",get_title:"get_title",get_isFocused:"get_isFocused",set_vsync:"set_vsync",get_vsync:"get_vsync",set_mouseLock:"set_mouseLock",get_mouseLock:"get_mouseLock",get_mouseY:"get_mouseY",get_mouseX:"get_mouseX",get_height:"get_height",get_width:"get_width"}
 };
 var hxd_System = function() { };
 $hxClasses["hxd.System"] = hxd_System;
 hxd_System.__name__ = "hxd.System";
-hxd_System.__properties__ = {set_allowTimeout:"set_allowTimeout",get_allowTimeout:"get_allowTimeout",get_screenDPI:"get_screenDPI",get_platform:"get_platform",get_lang:"get_lang",get_height:"get_height",get_width:"get_width"};
 hxd_System.timeoutTick = function() {
 };
 hxd_System.getCurrentLoop = function() {
@@ -55814,7 +55750,6 @@ hxd_fmt_hmd_Position.prototype = {
 		return m;
 	}
 	,__class__: hxd_fmt_hmd_Position
-	,__properties__: {get_qw:"get_qw"}
 };
 var hxd_fmt_hmd_GeometryFormat = function(name,format) {
 	this.name = name;
@@ -55842,7 +55777,6 @@ hxd_fmt_hmd_Geometry.prototype = {
 		return k;
 	}
 	,__class__: hxd_fmt_hmd_Geometry
-	,__properties__: {get_indexCount:"get_indexCount"}
 };
 var hxd_fmt_hmd_Material = function() {
 };
@@ -57270,7 +57204,6 @@ hxd_fs_FileEntry.prototype = {
 		}
 	}
 	,__class__: hxd_fs_FileEntry
-	,__properties__: {get_isAvailable:"get_isAvailable",get_isDirectory:"get_isDirectory",get_size:"get_size",get_extension:"get_extension",get_directory:"get_directory",get_path:"get_path"}
 };
 var hxd_fs_BytesFileEntry = function(path,bytes) {
 	this.fullPath = path;
@@ -57879,7 +57812,6 @@ hxd_poly2tri_Point.prototype = {
 		return "Point(" + this.x + ", " + this.y + ")";
 	}
 	,__class__: hxd_poly2tri_Point
-	,__properties__: {get_edge_list:"get_edge_list"}
 };
 var hxd_res__$Any_SingleFileSystem = function(path,bytes) {
 	hxd_fs_BytesFileSystem.call(this);
@@ -57917,7 +57849,6 @@ hxd_res_Resource.prototype = {
 		}
 	}
 	,__class__: hxd_res_Resource
-	,__properties__: {get_name:"get_name"}
 };
 var hxd_res_Any = function(loader,entry) {
 	hxd_res_Resource.call(this,entry);
@@ -58049,7 +57980,6 @@ hxd_res_Embed.__name__ = "hxd.res.Embed";
 var hxd_res__$Image_ImageFormat_$Impl_$ = {};
 $hxClasses["hxd.res._Image.ImageFormat_Impl_"] = hxd_res__$Image_ImageFormat_$Impl_$;
 hxd_res__$Image_ImageFormat_$Impl_$.__name__ = "hxd.res._Image.ImageFormat_Impl_";
-hxd_res__$Image_ImageFormat_$Impl_$.__properties__ = {get_useAsyncDecode:"get_useAsyncDecode"};
 hxd_res__$Image_ImageFormat_$Impl_$.get_useAsyncDecode = function(this1) {
 	return this1 == 0;
 };
@@ -60793,7 +60723,6 @@ hxd_snd_ChannelBase.prototype = {
 		HxOverrides.remove(this.effects,e);
 	}
 	,__class__: hxd_snd_ChannelBase
-	,__properties__: {set_volume:"set_volume"}
 };
 var hxd_snd_Channel = function() {
 	this.queue = [];
@@ -60890,7 +60819,6 @@ hxd_snd_Channel.prototype = $extend(hxd_snd_ChannelBase.prototype,{
 		return this.manager == null;
 	}
 	,__class__: hxd_snd_Channel
-	,__properties__: $extend(hxd_snd_ChannelBase.prototype.__properties__,{set_pause:"set_pause",set_position:"set_position"})
 });
 var hxd_snd_ChannelGroup = function(name) {
 	hxd_snd_ChannelBase.call(this);
@@ -61129,7 +61057,6 @@ hxd_snd_Data.prototype = {
 		return this.samples / this.samplingRate;
 	}
 	,__class__: hxd_snd_Data
-	,__properties__: {get_duration:"get_duration"}
 };
 var hxd_snd_EffectDriver = function() {
 };
@@ -62535,7 +62462,6 @@ hxd_snd_webaudio_BufferPlayback.prototype = {
 		this.node = null;
 	}
 	,__class__: hxd_snd_webaudio_BufferPlayback
-	,__properties__: {get_currentSample:"get_currentSample"}
 };
 var hxd_snd_webaudio_Context = function() { };
 $hxClasses["hxd.snd.webaudio.Context"] = hxd_snd_webaudio_Context;
@@ -62944,7 +62870,6 @@ hxd_snd_webaudio_Driver.prototype = {
 		return hxd_snd_webaudio_Context.destination;
 	}
 	,__class__: hxd_snd_webaudio_Driver
-	,__properties__: {set_destination:"set_destination",get_destination:"get_destination",get_masterGain:"get_masterGain"}
 };
 var hxd_snd_webaudio_LowPassDriver = function() {
 	this.pool = [];
@@ -64078,7 +64003,6 @@ hxsl_BatchShader.prototype = $extend(hxsl_Shader.prototype,{
 		return s;
 	}
 	,__class__: hxsl_BatchShader
-	,__properties__: {set_Batch_Buffer:"set_Batch_Buffer",get_Batch_Buffer:"get_Batch_Buffer",set_Batch_Count:"set_Batch_Count",get_Batch_Count:"get_Batch_Count"}
 });
 var hxsl_SearchMap = function() {
 };
@@ -70492,7 +70416,6 @@ hxsl_GlslOut.prototype = {
 		return this.decls.join("\n");
 	}
 	,__class__: hxsl_GlslOut
-	,__properties__: {get_isES2:"get_isES2",get_isES:"get_isES"}
 };
 var hxsl__$Linker_AllocatedVar = function() {
 };
@@ -73457,11 +73380,22 @@ Math.__name__ = "Math";
 var me_miltage_Constants = function() { };
 $hxClasses["me.miltage.Constants"] = me_miltage_Constants;
 me_miltage_Constants.__name__ = "me.miltage.Constants";
+var me_miltage_GameScene = function() {
+	h2d_Scene.call(this);
+};
+$hxClasses["me.miltage.GameScene"] = me_miltage_GameScene;
+me_miltage_GameScene.__name__ = "me.miltage.GameScene";
+me_miltage_GameScene.__super__ = h2d_Scene;
+me_miltage_GameScene.prototype = $extend(h2d_Scene.prototype,{
+	update: function(dt) {
+	}
+	,__class__: me_miltage_GameScene
+});
 var me_miltage_Game = function() {
 	this.mousePVec = new box2D_common_math_B2Vec2();
 	this.lastMouse = new box2D_common_math_B2Vec2();
 	this.types = [me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION,me_miltage_ItemType.CLEAVER,me_miltage_ItemType.ANVIL];
-	h2d_Scene.call(this);
+	me_miltage_GameScene.call(this);
 	this.initWorld();
 	this.typeIndex = 0;
 	this.spawnTime = 1.5;
@@ -73483,8 +73417,8 @@ var me_miltage_Game = function() {
 };
 $hxClasses["me.miltage.Game"] = me_miltage_Game;
 me_miltage_Game.__name__ = "me.miltage.Game";
-me_miltage_Game.__super__ = h2d_Scene;
-me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
+me_miltage_Game.__super__ = me_miltage_GameScene;
+me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 	update: function(dt) {
 		this.world.step(0.016666666666666666,3,3);
 		this.world.clearForces();
@@ -73539,6 +73473,7 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 				var inside = shape.testPoint(fixture1.getBody().getTransform(),_gthis.mousePVec);
 				if(inside) {
 					body = fixture1.getBody();
+					(js_Boot.__cast(body.getUserData() , me_miltage_Item)).onHit();
 					return false;
 				}
 			}
@@ -73610,6 +73545,7 @@ var me_miltage_Item = function(type,world,scene) {
 	fixture.filter.maskBits = 1;
 	this.body = world.createBody(bodyDef);
 	this.body.createFixture(fixture);
+	this.body.setUserData(this);
 	this.sprite = new h2d_Bitmap(this.getTile().center(),scene);
 	var _this = this.sprite;
 	_this.posChanged = true;
@@ -73617,11 +73553,15 @@ var me_miltage_Item = function(type,world,scene) {
 	var _this1 = this.sprite;
 	_this1.posChanged = true;
 	_this1.scaleY = 0.5;
+	this.hitTime = 0.2;
 };
 $hxClasses["me.miltage.Item"] = me_miltage_Item;
 me_miltage_Item.__name__ = "me.miltage.Item";
 me_miltage_Item.prototype = {
-	update: function(dt) {
+	onHit: function() {
+		this.hitTime = 0;
+	}
+	,update: function(dt) {
 		var pos = this.body.getWorldCenter();
 		var _this = this.sprite;
 		_this.posChanged = true;
@@ -73633,6 +73573,18 @@ me_miltage_Item.prototype = {
 		var v = this.body.getAngle();
 		_this2.posChanged = true;
 		_this2.rotation = v;
+		if(this.hitTime < 0.2) {
+			this.hitTime += dt;
+			var rate = this.hitTime / 0.2;
+			var rate1 = (rate < 0.5 ? rate : 1 - rate) * 2;
+			var val = 0.5 * (1 - rate1) + 0.58 * rate1;
+			var _this3 = this.sprite;
+			_this3.posChanged = true;
+			_this3.scaleX = val;
+			var _this4 = this.sprite;
+			_this4.posChanged = true;
+			_this4.scaleY = val;
+		}
 	}
 	,getTile: function() {
 		switch(this.type._hx_index) {
@@ -73649,7 +73601,7 @@ me_miltage_Item.prototype = {
 	,__class__: me_miltage_Item
 };
 var me_miltage_Title = function() {
-	h2d_Scene.call(this);
+	me_miltage_GameScene.call(this);
 	this.timeElapsed = 0;
 	var room = new h2d_Bitmap(hxd_Res.get_loader().loadCache("room.png",hxd_res_Image).toTile(),this);
 	room.posChanged = true;
@@ -73694,28 +73646,828 @@ var me_miltage_Title = function() {
 };
 $hxClasses["me.miltage.Title"] = me_miltage_Title;
 me_miltage_Title.__name__ = "me.miltage.Title";
-me_miltage_Title.__super__ = h2d_Scene;
-me_miltage_Title.prototype = $extend(h2d_Scene.prototype,{
+me_miltage_Title.__super__ = me_miltage_GameScene;
+me_miltage_Title.prototype = $extend(me_miltage_GameScene.prototype,{
 	update: function(dt) {
 		this.timeElapsed += dt;
-		var _g = this.radial;
-		_g.posChanged = true;
-		_g.rotation += dt / 4;
 		var _this = this.radial;
-		var v = 0.5 + Math.sin(this.timeElapsed) * 0.1;
+		var rate = this.timeElapsed / 1000;
 		_this.posChanged = true;
-		_this.scaleX = v;
-		var _this1 = this.radial;
-		var v1 = 0.5 + Math.sin(this.timeElapsed) * 0.1;
-		_this1.posChanged = true;
-		_this1.scaleY = v1;
-		var _this2 = this.title;
-		var v2 = this.height / 2 + Math.sin(this.timeElapsed * 4) * this.height * 0.01;
-		_this2.posChanged = true;
-		_this2.y = v2;
+		_this.rotation = 0 * (1 - rate) + 360 * rate;
+		if(hxd_Key.isReleased(0)) {
+			Main.setCurrentScene(SceneName.GAME);
+		}
 	}
 	,__class__: me_miltage_Title
 });
+var tweenxcore_Easing = function() { };
+$hxClasses["tweenxcore.Easing"] = tweenxcore_Easing;
+tweenxcore_Easing.__name__ = "tweenxcore.Easing";
+tweenxcore_Easing.linear = function(t) {
+	return t;
+};
+tweenxcore_Easing.sineIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		return 1 - Math.cos(t * 1.5707963267948966);
+	}
+};
+tweenxcore_Easing.sineOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		return Math.sin(t * 1.5707963267948966);
+	}
+};
+tweenxcore_Easing.sineInOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		return -0.5 * (Math.cos(3.1415926535897932384626433832795 * t) - 1);
+	}
+};
+tweenxcore_Easing.sineOutIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else if(t < 0.5) {
+		return 0.5 * Math.sin(t * 2 * 1.5707963267948966);
+	} else {
+		return -0.5 * Math.cos((t * 2 - 1) * 1.5707963267948966) + 1;
+	}
+};
+tweenxcore_Easing.quadIn = function(t) {
+	return t * t;
+};
+tweenxcore_Easing.quadOut = function(t) {
+	return -t * (t - 2);
+};
+tweenxcore_Easing.quadInOut = function(t) {
+	if(t < 0.5) {
+		return 2 * t * t;
+	} else {
+		return -2 * (--t * t) + 1;
+	}
+};
+tweenxcore_Easing.quadOutIn = function(t) {
+	if(t < 0.5) {
+		return -0.5 * (t *= 2) * (t - 2);
+	} else {
+		t = t * 2 - 1;
+		return 0.5 * t * t + 0.5;
+	}
+};
+tweenxcore_Easing.cubicIn = function(t) {
+	return t * t * t;
+};
+tweenxcore_Easing.cubicOut = function(t) {
+	return --t * t * t + 1;
+};
+tweenxcore_Easing.cubicInOut = function(t) {
+	if((t *= 2) < 1) {
+		return 0.5 * t * t * t;
+	} else {
+		return 0.5 * ((t -= 2) * t * t + 2);
+	}
+};
+tweenxcore_Easing.cubicOutIn = function(t) {
+	t = t * 2 - 1;
+	return 0.5 * (t * t * t + 1);
+};
+tweenxcore_Easing.quartIn = function(t) {
+	return (t *= t) * t;
+};
+tweenxcore_Easing.quartOut = function(t) {
+	t = --t * t;
+	return 1 - t * t;
+};
+tweenxcore_Easing.quartInOut = function(t) {
+	if((t *= 2) < 1) {
+		return 0.5 * (t *= t) * t;
+	} else {
+		t = (t -= 2) * t;
+		return -0.5 * (t * t - 2);
+	}
+};
+tweenxcore_Easing.quartOutIn = function(t) {
+	if(t < 0.5) {
+		t = t * 2 - 1;
+		return -0.5 * (t *= t) * t + 0.5;
+	} else {
+		t = t * 2 - 1;
+		return 0.5 * (t *= t) * t + 0.5;
+	}
+};
+tweenxcore_Easing.quintIn = function(t) {
+	return t * (t *= t) * t;
+};
+tweenxcore_Easing.quintOut = function(t) {
+	return --t * (t *= t) * t + 1;
+};
+tweenxcore_Easing.quintInOut = function(t) {
+	if((t *= 2) < 1) {
+		return 0.5 * t * (t *= t) * t;
+	} else {
+		return 0.5 * (t -= 2) * (t *= t) * t + 1;
+	}
+};
+tweenxcore_Easing.quintOutIn = function(t) {
+	t = t * 2 - 1;
+	return 0.5 * (t * (t *= t) * t + 1);
+};
+tweenxcore_Easing.expoIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else {
+		return Math.exp(6.931471805599453 * (t - 1));
+	}
+};
+tweenxcore_Easing.expoOut = function(t) {
+	if(t == 1) {
+		return 1;
+	} else {
+		return 1 - Math.exp(-6.9314718055994531 * t);
+	}
+};
+tweenxcore_Easing.expoInOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else if((t *= 2) < 1) {
+		return 0.5 * Math.exp(6.931471805599453 * (t - 1));
+	} else {
+		return 0.5 * (2 - Math.exp(-6.9314718055994531 * (t - 1)));
+	}
+};
+tweenxcore_Easing.expoOutIn = function(t) {
+	if(t < 0.5) {
+		return 0.5 * (1 - Math.exp(-13.862943611198906 * t));
+	} else if(t == 0.5) {
+		return 0.5;
+	} else {
+		return 0.5 * (Math.exp(13.862943611198906 * (t - 1)) + 1);
+	}
+};
+tweenxcore_Easing.circIn = function(t) {
+	if(t < -1 || 1 < t) {
+		return 0;
+	} else {
+		return 1 - Math.sqrt(1 - t * t);
+	}
+};
+tweenxcore_Easing.circOut = function(t) {
+	if(t < 0 || 2 < t) {
+		return 0;
+	} else {
+		return Math.sqrt(t * (2 - t));
+	}
+};
+tweenxcore_Easing.circInOut = function(t) {
+	if(t < -0.5 || 1.5 < t) {
+		return 0.5;
+	} else if((t *= 2) < 1) {
+		return -0.5 * (Math.sqrt(1 - t * t) - 1);
+	} else {
+		return 0.5 * (Math.sqrt(1 - (t -= 2) * t) + 1);
+	}
+};
+tweenxcore_Easing.circOutIn = function(t) {
+	if(t < 0) {
+		return 0;
+	} else if(1 < t) {
+		return 1;
+	} else if(t < 0.5) {
+		t = t * 2 - 1;
+		return 0.5 * Math.sqrt(1 - t * t);
+	} else {
+		t = t * 2 - 1;
+		return -0.5 * (Math.sqrt(1 - t * t) - 1 - 1);
+	}
+};
+tweenxcore_Easing.bounceIn = function(t) {
+	t = 1 - t;
+	if(t < 0.36363636363636365) {
+		return 1 - 7.5625 * t * t;
+	} else if(t < 0.72727272727272729) {
+		return 1 - (7.5625 * (t -= 0.54545454545454541) * t + 0.75);
+	} else if(t < 0.90909090909090906) {
+		return 1 - (7.5625 * (t -= 0.81818181818181823) * t + 0.9375);
+	} else {
+		return 1 - (7.5625 * (t -= 0.95454545454545459) * t + 0.984375);
+	}
+};
+tweenxcore_Easing.bounceOut = function(t) {
+	if(t < 0.36363636363636365) {
+		return 7.5625 * t * t;
+	} else if(t < 0.72727272727272729) {
+		return 7.5625 * (t -= 0.54545454545454541) * t + 0.75;
+	} else if(t < 0.90909090909090906) {
+		return 7.5625 * (t -= 0.81818181818181823) * t + 0.9375;
+	} else {
+		return 7.5625 * (t -= 0.95454545454545459) * t + 0.984375;
+	}
+};
+tweenxcore_Easing.bounceInOut = function(t) {
+	if(t < 0.5) {
+		t = 1 - t * 2;
+		if(t < 0.36363636363636365) {
+			return (1 - 7.5625 * t * t) * 0.5;
+		} else if(t < 0.72727272727272729) {
+			return (1 - (7.5625 * (t -= 0.54545454545454541) * t + 0.75)) * 0.5;
+		} else if(t < 0.90909090909090906) {
+			return (1 - (7.5625 * (t -= 0.81818181818181823) * t + 0.9375)) * 0.5;
+		} else {
+			return (1 - (7.5625 * (t -= 0.95454545454545459) * t + 0.984375)) * 0.5;
+		}
+	} else {
+		t = t * 2 - 1;
+		if(t < 0.36363636363636365) {
+			return 7.5625 * t * t * 0.5 + 0.5;
+		} else if(t < 0.72727272727272729) {
+			return (7.5625 * (t -= 0.54545454545454541) * t + 0.75) * 0.5 + 0.5;
+		} else if(t < 0.90909090909090906) {
+			return (7.5625 * (t -= 0.81818181818181823) * t + 0.9375) * 0.5 + 0.5;
+		} else {
+			return (7.5625 * (t -= 0.95454545454545459) * t + 0.984375) * 0.5 + 0.5;
+		}
+	}
+};
+tweenxcore_Easing.bounceOutIn = function(t) {
+	if(t < 0.5) {
+		if((t *= 2) < 0.36363636363636365) {
+			return 0.5 * (7.5625 * t * t);
+		} else if(t < 0.72727272727272729) {
+			return 0.5 * (7.5625 * (t -= 0.54545454545454541) * t + 0.75);
+		} else if(t < 0.90909090909090906) {
+			return 0.5 * (7.5625 * (t -= 0.81818181818181823) * t + 0.9375);
+		} else {
+			return 0.5 * (7.5625 * (t -= 0.95454545454545459) * t + 0.984375);
+		}
+	} else {
+		t = 1 - (t * 2 - 1);
+		if(t < 0.36363636363636365) {
+			return 0.5 - 0.5 * (7.5625 * t * t) + 0.5;
+		} else if(t < 0.72727272727272729) {
+			return 0.5 - 0.5 * (7.5625 * (t -= 0.54545454545454541) * t + 0.75) + 0.5;
+		} else if(t < 0.90909090909090906) {
+			return 0.5 - 0.5 * (7.5625 * (t -= 0.81818181818181823) * t + 0.9375) + 0.5;
+		} else {
+			return 0.5 - 0.5 * (7.5625 * (t -= 0.95454545454545459) * t + 0.984375) + 0.5;
+		}
+	}
+};
+tweenxcore_Easing.backIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		return t * t * (2.70158 * t - 1.70158);
+	}
+};
+tweenxcore_Easing.backOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		return --t * t * (2.70158 * t + 1.70158) + 1;
+	}
+};
+tweenxcore_Easing.backInOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else if((t *= 2) < 1) {
+		return 0.5 * (t * t * (3.5949095 * t - 2.5949095));
+	} else {
+		return 0.5 * ((t -= 2) * t * (3.5949095 * t + 2.5949095) + 2);
+	}
+};
+tweenxcore_Easing.backOutIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else if(t < 0.5) {
+		t = t * 2 - 1;
+		return 0.5 * (t * t * (2.70158 * t + 1.70158) + 1);
+	} else {
+		t = t * 2 - 1;
+		return 0.5 * t * t * (2.70158 * t - 1.70158) + 0.5;
+	}
+};
+tweenxcore_Easing.elasticIn = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		var s = 7.5e-005;
+		return -(Math.exp(6.931471805599453 * --t) * Math.sin((t * 0.001 - s) * 6.2831853071795862 / 0.0003));
+	}
+};
+tweenxcore_Easing.elasticOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		var s = 7.5e-005;
+		return Math.exp(-6.9314718055994531 * t) * Math.sin((t * 0.001 - s) * 6.2831853071795862 / 0.0003) + 1;
+	}
+};
+tweenxcore_Easing.elasticInOut = function(t) {
+	if(t == 0) {
+		return 0;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		var s = 7.5e-005;
+		if((t *= 2) < 1) {
+			return -0.5 * (Math.exp(6.931471805599453 * --t) * Math.sin((t * 0.001 - s) * 6.2831853071795862 / 0.0003));
+		} else {
+			return Math.exp(-6.9314718055994531 * --t) * Math.sin((t * 0.001 - s) * 6.2831853071795862 / 0.0003) * 0.5 + 1;
+		}
+	}
+};
+tweenxcore_Easing.elasticOutIn = function(t) {
+	if(t < 0.5) {
+		if((t *= 2) == 0) {
+			return 0;
+		} else {
+			var s = 7.5e-005;
+			return 0.5 * Math.exp(-6.9314718055994531 * t) * Math.sin((t * 0.001 - s) * 6.2831853071795862 / 0.0003) + 0.5;
+		}
+	} else if(t == 0.5) {
+		return 0.5;
+	} else if(t == 1) {
+		return 1;
+	} else {
+		t = t * 2 - 1;
+		var s1 = 7.5e-005;
+		return -(0.5 * Math.exp(6.931471805599453 * --t) * Math.sin((t * 0.001 - s1) * 6.2831853071795862 / 0.0003)) + 0.5;
+	}
+};
+tweenxcore_Easing.warpOut = function(t) {
+	if(t <= 0) {
+		return 0;
+	} else {
+		return 1;
+	}
+};
+tweenxcore_Easing.warpIn = function(t) {
+	if(t < 1) {
+		return 0;
+	} else {
+		return 1;
+	}
+};
+tweenxcore_Easing.warpInOut = function(t) {
+	if(t < 0.5) {
+		return 0;
+	} else {
+		return 1;
+	}
+};
+tweenxcore_Easing.warpOutIn = function(t) {
+	if(t <= 0) {
+		return 0;
+	} else if(t < 1) {
+		return 0.5;
+	} else {
+		return 1;
+	}
+};
+var tweenxcore_FloatTools = function() { };
+$hxClasses["tweenxcore.FloatTools"] = tweenxcore_FloatTools;
+tweenxcore_FloatTools.__name__ = "tweenxcore.FloatTools";
+tweenxcore_FloatTools.revert = function(rate) {
+	return 1 - rate;
+};
+tweenxcore_FloatTools.clamp = function(value,min,max) {
+	if(max == null) {
+		max = 1.0;
+	}
+	if(min == null) {
+		min = 0.0;
+	}
+	if(value <= min) {
+		return min;
+	} else if(max <= value) {
+		return max;
+	} else {
+		return value;
+	}
+};
+tweenxcore_FloatTools.lerp = function(rate,from,to) {
+	return from * (1 - rate) + to * rate;
+};
+tweenxcore_FloatTools.inverseLerp = function(value,from,to) {
+	return (value - from) / (to - from);
+};
+tweenxcore_FloatTools.repeat = function(value,from,to) {
+	if(to == null) {
+		to = 1.0;
+	}
+	if(from == null) {
+		from = 0.0;
+	}
+	var p = (value - from) / (to - from);
+	return p - Math.floor(p);
+};
+tweenxcore_FloatTools.shake = function(rate,center,randomFunc) {
+	if(center == null) {
+		center = 0.0;
+	}
+	if(randomFunc == null) {
+		randomFunc = Math.random;
+	}
+	var rate1 = randomFunc();
+	return center + (-rate * (1 - rate1) + rate * rate1);
+};
+tweenxcore_FloatTools.spread = function(rate,scale) {
+	return -scale * (1 - rate) + scale * rate;
+};
+tweenxcore_FloatTools.sinByRate = function(rate) {
+	return Math.sin(rate * 2 * Math.PI);
+};
+tweenxcore_FloatTools.cosByRate = function(rate) {
+	return Math.cos(rate * 2 * Math.PI);
+};
+tweenxcore_FloatTools.yoyo = function(rate,easing) {
+	return easing((rate < 0.5 ? rate : 1 - rate) * 2);
+};
+tweenxcore_FloatTools.zigzag = function(rate,easing) {
+	if(rate < 0.5) {
+		return easing(rate * 2);
+	} else {
+		return 1 - easing((rate - 0.5) * 2);
+	}
+};
+tweenxcore_FloatTools.mixEasing = function(rate,easing1,easing2,easing2Strength) {
+	if(easing2Strength == null) {
+		easing2Strength = 0.5;
+	}
+	return easing1(rate) * (1 - easing2Strength) + easing2(rate) * easing2Strength;
+};
+tweenxcore_FloatTools.crossfadeEasing = function(rate,easing1,easing2,easing2StrengthEasing,easing2StrengthStart,easing2StrengthEnd) {
+	if(easing2StrengthEnd == null) {
+		easing2StrengthEnd = 1;
+	}
+	if(easing2StrengthStart == null) {
+		easing2StrengthStart = 0;
+	}
+	var rate1 = easing2StrengthEasing(rate);
+	var rate2 = easing2StrengthStart * (1 - rate1) + easing2StrengthEnd * rate1;
+	return easing1(rate) * (1 - rate2) + easing2(rate) * rate2;
+};
+tweenxcore_FloatTools.connectEasing = function(time,easing1,easing2,switchTime,switchValue) {
+	if(switchValue == null) {
+		switchValue = 0.5;
+	}
+	if(switchTime == null) {
+		switchTime = 0.5;
+	}
+	if(time < switchTime) {
+		var rate = easing1(time / switchTime);
+		return 0 * (1 - rate) + switchValue * rate;
+	} else {
+		var rate1 = easing2((time - switchTime) / (1 - switchTime));
+		return switchValue * (1 - rate1) + rate1;
+	}
+};
+tweenxcore_FloatTools.oneTwoEasing = function(time,easingOne,easingTwo,switchTime) {
+	if(switchTime == null) {
+		switchTime = 0.5;
+	}
+	if(time < switchTime) {
+		return easingOne(time / switchTime);
+	} else {
+		return easingTwo((time - switchTime) / (1 - switchTime));
+	}
+};
+tweenxcore_FloatTools.binarySearch = function(sortedValues,value,boundaryMode) {
+	if(boundaryMode == null) {
+		boundaryMode = 0;
+	}
+	var min = 0;
+	var max = sortedValues.length;
+	if(boundaryMode == 0) {
+		while(true) {
+			var next = ((max - min) / 2 | 0) + min;
+			var dv = sortedValues[next];
+			if(dv <= value) {
+				min = next + 1;
+			} else {
+				max = next;
+			}
+			if(min == max) {
+				break;
+			}
+		}
+	} else {
+		while(true) {
+			var next1 = ((max - min) / 2 | 0) + min;
+			var dv1 = sortedValues[next1];
+			if(dv1 < value) {
+				min = next1 + 1;
+			} else {
+				max = next1;
+			}
+			if(min == max) {
+				break;
+			}
+		}
+	}
+	return min;
+};
+tweenxcore_FloatTools.polyline = function(rate,values) {
+	if(values.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else {
+		var max = values.length - 1;
+		var scaledRate = rate * max;
+		var min = 0;
+		var max1 = max - 1;
+		if(max1 == null) {
+			max1 = 1.0;
+		}
+		if(min == null) {
+			min = 0.0;
+		}
+		var index = Math.floor(scaledRate <= min ? min : max1 <= scaledRate ? max1 : scaledRate);
+		var innerRate = scaledRate - index;
+		return values[index] * (1 - innerRate) + values[index + 1] * innerRate;
+	}
+};
+tweenxcore_FloatTools.bezier2 = function(rate,from,control,to) {
+	return (from * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + to * rate) * rate;
+};
+tweenxcore_FloatTools.bezier3 = function(rate,from,control1,control2,to) {
+	var control = control1 * (1 - rate) + control2 * rate;
+	return ((from * (1 - rate) + control1 * rate) * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + (control2 * (1 - rate) + to * rate) * rate) * rate;
+};
+tweenxcore_FloatTools.bezier = function(rate,values) {
+	if(values.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(values.length == 2) {
+		return values[0] * (1 - rate) + values[1] * rate;
+	} else if(values.length == 3) {
+		var control = values[1];
+		return (values[0] * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + values[2] * rate) * rate;
+	} else {
+		return tweenxcore_FloatTools._bezier(rate,values);
+	}
+};
+tweenxcore_FloatTools._bezier = function(rate,values) {
+	if(values.length == 4) {
+		var control1 = values[1];
+		var control2 = values[2];
+		var control = control1 * (1 - rate) + control2 * rate;
+		return ((values[0] * (1 - rate) + control1 * rate) * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + (control2 * (1 - rate) + values[3] * rate) * rate) * rate;
+	}
+	var _g = [];
+	var _g1 = 0;
+	var _g2 = values.length - 1;
+	while(_g1 < _g2) {
+		var i = _g1++;
+		_g.push(values[i] * (1 - rate) + values[i + 1] * rate);
+	}
+	return tweenxcore_FloatTools._bezier(rate,_g);
+};
+tweenxcore_FloatTools.uniformQuadraticBSpline = function(rate,values) {
+	if(values.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(values.length == 2) {
+		return values[0] * (1 - rate) + values[1] * rate;
+	} else {
+		var max = values.length - 2;
+		var scaledRate = rate * max;
+		var min = 0;
+		var max1 = max - 1;
+		if(max1 == null) {
+			max1 = 1.0;
+		}
+		if(min == null) {
+			min = 0.0;
+		}
+		var index = Math.floor(scaledRate <= min ? min : max1 <= scaledRate ? max1 : scaledRate);
+		var innerRate = scaledRate - index;
+		var p0 = values[index];
+		var p1 = values[index + 1];
+		var p2 = values[index + 2];
+		return innerRate * innerRate * (p0 / 2 - p1 + p2 / 2) + innerRate * (-p0 + p1) + p0 / 2 + p1 / 2;
+	}
+};
+tweenxcore_FloatTools.frameToSecond = function(frame,fps) {
+	return frame / fps;
+};
+tweenxcore_FloatTools.secondToFrame = function(second,fps) {
+	return second * fps;
+};
+tweenxcore_FloatTools.degreeToRate = function(degree) {
+	return degree / 360;
+};
+tweenxcore_FloatTools.rateToDegree = function(rate) {
+	return rate * 360;
+};
+tweenxcore_FloatTools.radianToRate = function(radian) {
+	return radian / (2 * Math.PI);
+};
+tweenxcore_FloatTools.rateToRadian = function(rate) {
+	return rate * 2 * Math.PI;
+};
+tweenxcore_FloatTools.millisecondToBeat = function(millisecond,bpm) {
+	return millisecond * bpm / 60000;
+};
+tweenxcore_FloatTools.beatToMillisecond = function(beat,bpm) {
+	return beat * 60000 / bpm;
+};
+var tweenxcore_PointTools = function() { };
+$hxClasses["tweenxcore.PointTools"] = tweenxcore_PointTools;
+tweenxcore_PointTools.__name__ = "tweenxcore.PointTools";
+tweenxcore_PointTools.polyline = function(outputPoint,rate,points) {
+	var xs = [];
+	var ys = [];
+	var p = $getIterator(points);
+	while(p.hasNext()) {
+		var p1 = p.next();
+		xs.push(p1.x);
+		ys.push(p1.y);
+	}
+	var tmp;
+	if(xs.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else {
+		var max = xs.length - 1;
+		var scaledRate = rate * max;
+		var min = 0;
+		var max1 = max - 1;
+		if(max1 == null) {
+			max1 = 1.0;
+		}
+		if(min == null) {
+			min = 0.0;
+		}
+		var index = Math.floor(scaledRate <= min ? min : max1 <= scaledRate ? max1 : scaledRate);
+		var innerRate = scaledRate - index;
+		tmp = xs[index] * (1 - innerRate) + xs[index + 1] * innerRate;
+	}
+	outputPoint.x = tmp;
+	var tmp1;
+	if(ys.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else {
+		var max2 = ys.length - 1;
+		var scaledRate1 = rate * max2;
+		var min1 = 0;
+		var max3 = max2 - 1;
+		if(max3 == null) {
+			max3 = 1.0;
+		}
+		if(min1 == null) {
+			min1 = 0.0;
+		}
+		var index1 = Math.floor(scaledRate1 <= min1 ? min1 : max3 <= scaledRate1 ? max3 : scaledRate1);
+		var innerRate1 = scaledRate1 - index1;
+		tmp1 = ys[index1] * (1 - innerRate1) + ys[index1 + 1] * innerRate1;
+	}
+	outputPoint.y = tmp1;
+};
+tweenxcore_PointTools.bezier2 = function(outputPoint,rate,from,control,to) {
+	var control1 = control.x;
+	outputPoint.x = (from.x * (1 - rate) + control1 * rate) * (1 - rate) + (control1 * (1 - rate) + from.x * rate) * rate;
+	var control2 = control.y;
+	outputPoint.y = (from.y * (1 - rate) + control2 * rate) * (1 - rate) + (control2 * (1 - rate) + from.y * rate) * rate;
+};
+tweenxcore_PointTools.bezier3 = function(outputPoint,rate,from,control1,control2,to) {
+	var control11 = control1.x;
+	var control21 = control2.x;
+	var control = control11 * (1 - rate) + control21 * rate;
+	outputPoint.x = ((from.x * (1 - rate) + control11 * rate) * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + (control21 * (1 - rate) + from.x * rate) * rate) * rate;
+	var control12 = control1.y;
+	var control22 = control2.y;
+	var control3 = control12 * (1 - rate) + control22 * rate;
+	outputPoint.y = ((from.y * (1 - rate) + control12 * rate) * (1 - rate) + control3 * rate) * (1 - rate) + (control3 * (1 - rate) + (control22 * (1 - rate) + from.y * rate) * rate) * rate;
+};
+tweenxcore_PointTools.bezier = function(outputPoint,rate,points) {
+	var xs = [];
+	var ys = [];
+	var p = $getIterator(points);
+	while(p.hasNext()) {
+		var p1 = p.next();
+		xs.push(p1.x);
+		ys.push(p1.y);
+	}
+	var tmp;
+	if(xs.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(xs.length == 2) {
+		tmp = xs[0] * (1 - rate) + xs[1] * rate;
+	} else if(xs.length == 3) {
+		var control = xs[1];
+		tmp = (xs[0] * (1 - rate) + control * rate) * (1 - rate) + (control * (1 - rate) + xs[2] * rate) * rate;
+	} else {
+		tmp = tweenxcore_FloatTools._bezier(rate,xs);
+	}
+	outputPoint.x = tmp;
+	var tmp1;
+	if(ys.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(ys.length == 2) {
+		tmp1 = ys[0] * (1 - rate) + ys[1] * rate;
+	} else if(ys.length == 3) {
+		var control1 = ys[1];
+		tmp1 = (ys[0] * (1 - rate) + control1 * rate) * (1 - rate) + (control1 * (1 - rate) + ys[2] * rate) * rate;
+	} else {
+		tmp1 = tweenxcore_FloatTools._bezier(rate,ys);
+	}
+	outputPoint.y = tmp1;
+};
+tweenxcore_PointTools.uniformQuadraticBSpline = function(outputPoint,rate,points) {
+	var xs = [];
+	var ys = [];
+	var p = $getIterator(points);
+	while(p.hasNext()) {
+		var p1 = p.next();
+		xs.push(p1.x);
+		ys.push(p1.y);
+	}
+	var tmp;
+	if(xs.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(xs.length == 2) {
+		tmp = xs[0] * (1 - rate) + xs[1] * rate;
+	} else {
+		var max = xs.length - 2;
+		var scaledRate = rate * max;
+		var min = 0;
+		var max1 = max - 1;
+		if(max1 == null) {
+			max1 = 1.0;
+		}
+		if(min == null) {
+			min = 0.0;
+		}
+		var index = Math.floor(scaledRate <= min ? min : max1 <= scaledRate ? max1 : scaledRate);
+		var innerRate = scaledRate - index;
+		var p0 = xs[index];
+		var p11 = xs[index + 1];
+		var p2 = xs[index + 2];
+		tmp = innerRate * innerRate * (p0 / 2 - p11 + p2 / 2) + innerRate * (-p0 + p11) + p0 / 2 + p11 / 2;
+	}
+	outputPoint.x = tmp;
+	var tmp1;
+	if(ys.length < 2) {
+		throw new js__$Boot_HaxeError("points length must be more than 2");
+	} else if(ys.length == 2) {
+		tmp1 = ys[0] * (1 - rate) + ys[1] * rate;
+	} else {
+		var max2 = ys.length - 2;
+		var scaledRate1 = rate * max2;
+		var min1 = 0;
+		var max3 = max2 - 1;
+		if(max3 == null) {
+			max3 = 1.0;
+		}
+		if(min1 == null) {
+			min1 = 0.0;
+		}
+		var index1 = Math.floor(scaledRate1 <= min1 ? min1 : max3 <= scaledRate1 ? max3 : scaledRate1);
+		var innerRate1 = scaledRate1 - index1;
+		var p01 = ys[index1];
+		var p12 = ys[index1 + 1];
+		var p21 = ys[index1 + 2];
+		tmp1 = innerRate1 * innerRate1 * (p01 / 2 - p12 + p21 / 2) + innerRate1 * (-p01 + p12) + p01 / 2 + p12 / 2;
+	}
+	outputPoint.y = tmp1;
+};
+var tweenxcore_MatrixTools = function() { };
+$hxClasses["tweenxcore.MatrixTools"] = tweenxcore_MatrixTools;
+tweenxcore_MatrixTools.__name__ = "tweenxcore.MatrixTools";
+tweenxcore_MatrixTools.createSimilarityTransform = function(outputMatrix,fromX,fromY,toX,toY) {
+	var dx = toX - fromX;
+	var dy = toY - fromY;
+	var rot = Math.atan2(dy,dx);
+	var d = Math.sqrt(dx * dx + dy * dy);
+	outputMatrix.a = d * Math.cos(rot);
+	outputMatrix.b = d * Math.sin(rot);
+	outputMatrix.c = -d * Math.sin(rot);
+	outputMatrix.d = d * Math.cos(rot);
+	outputMatrix.tx = fromX;
+	outputMatrix.ty = fromY;
+};
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
@@ -74421,6 +75173,16 @@ hxsl_Serializer.SIGN = 9139229;
 hxsl_SharedShader.UNROLL_LOOPS = false;
 me_miltage_Constants.PPM = 100;
 me_miltage_Constants.SPAWN_TIME = 6;
+me_miltage_Item.HIT_TIME = 0.2;
+me_miltage_Title.ROTATION_TIME = 1000;
+me_miltage_Title.SCALE_TIME = 200;
+tweenxcore_Easing.PI = 3.1415926535897932384626433832795;
+tweenxcore_Easing.PI_H = 1.5707963267948966;
+tweenxcore_Easing.LN_2 = 0.6931471805599453;
+tweenxcore_Easing.LN_2_10 = 6.931471805599453;
+tweenxcore_Easing.overshoot = 1.70158;
+tweenxcore_Easing.amplitude = 1;
+tweenxcore_Easing.period = 0.0003;
 {
 	Main.main();
 	haxe_EntryPoint.run();

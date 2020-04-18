@@ -2,7 +2,12 @@ package me.miltage;
 
 import h2d.Bitmap;
 
-class Title extends h2d.Scene {
+using tweenxcore.Tools;
+
+class Title extends GameScene {
+
+    private static inline var ROTATION_TIME:Float = 1000;
+    private static inline var SCALE_TIME:Float = 200;
 
     private var radial:Bitmap;
     private var title:Bitmap;
@@ -36,14 +41,22 @@ class Title extends h2d.Scene {
         title.y = height/2;
     }
 
-    public function update(dt:Float)
+    override public function update(dt:Float)
     {
         timeElapsed += dt;
 
-        radial.rotation += dt/4;
+        /*radial.rotation += dt/4;
         radial.scaleX = 0.5 + Math.sin(timeElapsed) * 0.1;
         radial.scaleY = 0.5 + Math.sin(timeElapsed) * 0.1;
 
-        title.y = height/2 + Math.sin(timeElapsed * 4) * height * 0.01;
+        title.y = height/2 + Math.sin(timeElapsed * 4) * height * 0.01;*/
+
+        radial.rotation = (timeElapsed/ROTATION_TIME).linear().lerp(0, 360);
+        
+        if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT))
+        {
+            Main.setCurrentScene(GAME);
+        }
     }
+
 }

@@ -48,6 +48,16 @@ class Game extends h2d.Scene {
         typeIndex = 0;
         spawnTime = Constants.SPAWN_TIME / 4;
         items = [];
+
+        var room = new Bitmap(hxd.Res.room.toTile(), this);
+        room.scaleX = 0.5;
+        room.scaleY = 0.5;
+
+        var junior = new Bitmap(hxd.Res.junior.toTile().center(), this);
+        junior.scaleX = 0.5;
+        junior.scaleY = 0.5;
+        junior.x = width/2;
+        junior.y = height - 130;
     }
 
     public function update(dt:Float)

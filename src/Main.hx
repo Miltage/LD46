@@ -2,6 +2,8 @@ import me.miltage.Game;
 
 class Main extends hxd.App {
 
+    private var game:Game;
+
     override function init() {
         
         // set up initial scene
@@ -9,10 +11,15 @@ class Main extends hxd.App {
         tf.text = "Hello World!";
 
         // switch to new scene
-        var game = new Game();
-        //setScene(game);
+        game = new Game();
+        setScene(game);
         
 
+    }
+
+    override function update(dt:Float) 
+    {
+        game.update(dt);
     }
 
     static function main() {

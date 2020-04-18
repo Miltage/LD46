@@ -73130,10 +73130,11 @@ me_miltage_Constants.__name__ = "me.miltage.Constants";
 var me_miltage_Game = function() {
 	this.mousePVec = new box2D_common_math_B2Vec2();
 	this.lastMouse = new box2D_common_math_B2Vec2();
+	this.types = [me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION,me_miltage_ItemType.CLEAVER,me_miltage_ItemType.ANVIL];
 	h2d_Scene.call(this);
 	this.initWorld();
+	this.typeIndex = 0;
 	this.spawnTime = 6;
-	var item = new me_miltage_Item(this.world);
 };
 $hxClasses["me.miltage.Game"] = me_miltage_Game;
 me_miltage_Game.__name__ = "me.miltage.Game";
@@ -73146,7 +73147,7 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 		if(this.spawnTime > 0) {
 			this.spawnTime -= dt;
 		} else {
-			var item = new me_miltage_Item(this.world);
+			var item = new me_miltage_Item(this.getNextType(),this.world,this.width);
 			this.spawnTime = 6;
 		}
 		if(hxd_Key.isPressed(0)) {
@@ -73157,6 +73158,14 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 				body.applyImpulse(new box2D_common_math_B2Vec2(Math.random() * 4 - 2,-5),body.getWorldCenter());
 			}
 		}
+	}
+	,getNextType: function() {
+		var type = this.types[this.typeIndex];
+		this.typeIndex++;
+		if(this.typeIndex >= this.types.length) {
+			this.typeIndex = 0;
+		}
+		return type;
 	}
 	,getBodyAtMouse: function(includeStatic) {
 		if(includeStatic == null) {
@@ -73212,14 +73221,37 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 	}
 	,__class__: me_miltage_Game
 });
-var me_miltage_Item = function(world) {
+var me_miltage_ItemType = $hxEnums["me.miltage.ItemType"] = { __ename__ : true, __constructs__ : ["CLEAVER","ANVIL","TOASTER","TELEVISION"]
+	,CLEAVER: {_hx_index:0,__enum__:"me.miltage.ItemType",toString:$estr}
+	,ANVIL: {_hx_index:1,__enum__:"me.miltage.ItemType",toString:$estr}
+	,TOASTER: {_hx_index:2,__enum__:"me.miltage.ItemType",toString:$estr}
+	,TELEVISION: {_hx_index:3,__enum__:"me.miltage.ItemType",toString:$estr}
+};
+me_miltage_ItemType.__empty_constructs__ = [me_miltage_ItemType.CLEAVER,me_miltage_ItemType.ANVIL,me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION];
+var me_miltage_Item = function(type,world,width) {
+	this.type = type;
 	var bodyDef = new box2D_dynamics_B2BodyDef();
-	bodyDef.position.set(1,1);
+	bodyDef.position.set(width / 2 / 100,1);
 	bodyDef.linearDamping = 0.5;
 	bodyDef.type = 2;
 	var circle = new box2D_collision_shapes_B2CircleShape(0.6);
 	var fixture = new box2D_dynamics_B2FixtureDef();
-	fixture.density = 0.8;
+	var tmp;
+	switch(type._hx_index) {
+	case 0:
+		tmp = 0.6;
+		break;
+	case 1:
+		tmp = 2.0;
+		break;
+	case 2:
+		tmp = 0.8;
+		break;
+	case 3:
+		tmp = 1.2;
+		break;
+	}
+	fixture.density = tmp;
 	fixture.shape = circle;
 	fixture.filter.categoryBits = 2;
 	fixture.filter.maskBits = 1;

@@ -1,6 +1,9 @@
 package me.miltage;
 
+import me.miltage.Item.ItemType;
+
 import h2d.Graphics;
+
 import box2D.dynamics.B2HeapsDebugDraw;
 import box2D.dynamics.B2DebugDraw;
 import box2D.dynamics.B2World;
@@ -16,6 +19,9 @@ import box2D.collision.shapes.B2PolygonShape;
 import box2D.collision.shapes.B2CircleShape;
 
 class Game extends h2d.Scene {
+
+    private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, ANVIL];
+    private var typeIndex:Int;
 
     private var world:B2World;
     private var spawnTime:Float;
@@ -37,9 +43,8 @@ class Game extends h2d.Scene {
         anim.y = 100;*/
 
         initWorld();
+        typeIndex = 0;
         spawnTime = Constants.SPAWN_TIME;
-
-        var item = new Item(world);
     }
 
     public function update(dt:Float)
@@ -52,7 +57,7 @@ class Game extends h2d.Scene {
             spawnTime -= dt;
         else
         {
-            var item = new Item(world);
+            var item = new Item(getNextType(), world, width);
             spawnTime = Constants.SPAWN_TIME;
         }
 
@@ -66,6 +71,17 @@ class Game extends h2d.Scene {
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
             }
         }
+    }
+
+    private function getNextType():ItemType
+    {
+        var type = types[typeIndex];
+
+        typeIndex++;
+        if (typeIndex >= types.length)
+            typeIndex = 0;
+
+        return type;
     }
 
     private var lastMouse:B2Vec2 = new B2Vec2();

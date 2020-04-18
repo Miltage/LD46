@@ -1,5 +1,6 @@
 -lib heaps
 -lib box2d
+-lib actuate
 -js bin/game.js
 -main Main
 -p src

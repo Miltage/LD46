@@ -1,8 +1,17 @@
+import me.miltage.Title;
 import me.miltage.Game;
+
+enum SceneName {
+    TITLE;
+    GAME;
+}
 
 class Main extends hxd.App {
 
     private var game:Game;
+    private var title:Title;
+
+    private var currentScene:SceneName;
 
     override function init() {
         
@@ -13,14 +22,21 @@ class Main extends hxd.App {
 
         // switch to new scene
         game = new Game();
-        setScene(game);
+        //setScene(game);
         
+        title = new Title();
+        setScene(title);
+
+        currentScene = TITLE;
 
     }
 
     override function update(dt:Float) 
     {
-        game.update(dt);
+        if (currentScene == TITLE)
+            title.update(dt);
+        else if (currentScene == GAME)
+            game.update(dt);
     }
 
     static function main() {

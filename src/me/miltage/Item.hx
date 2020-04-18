@@ -81,6 +81,11 @@ class Item {
         }
     }
 
+    public function isOnFloor(scene:Scene):Bool
+    {
+        return (body.getWorldCenter().y * Constants.PPM > scene.height * 0.75);
+    }
+
     private function getTile():Tile
     {
         return switch (type)

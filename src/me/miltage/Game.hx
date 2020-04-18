@@ -1,5 +1,6 @@
 package me.miltage;
 
+import haxe.Timer;
 import h2d.Bitmap;
 import me.miltage.Item.ItemType;
 
@@ -29,6 +30,7 @@ class Game extends GameScene {
     private var world:B2World;
     private var spawnTime:Float;
     private var playing:Bool;
+    private var timer:Timer;
 
     public function new() {
         super();
@@ -51,6 +53,9 @@ class Game extends GameScene {
         spawnTime = 0;
         items = [];
         playing = false;
+
+        Main.seconds = 0;
+        Main.itemsJuggled = 0;
 
         var room = new Bitmap(hxd.Res.room.toTile(), this);
         room.scaleX = 0.5;
@@ -91,13 +96,26 @@ class Game extends GameScene {
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
                 body.applyTorque(Math.random() * 10 - 5);
-                playing = true;
+                if (!playing)
+                {
+                    timer = new Timer(1000);
+                    timer.run = function(){
+                        Main.seconds++;
+                    };
+                    playing = true;
+                }
             }
         }
 
         for (item in items)
         {
             item.update(dt);
+            if (item.isOnFloor(this))
+            {
+                Main.itemsJuggled = items.length;
+                timer.stop();
+                Main.setCurrentScene(END);
+            }
         }
     }
 

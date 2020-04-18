@@ -317,8 +317,10 @@ Main.__super__ = hxd_App;
 Main.prototype = $extend(hxd_App.prototype,{
 	init: function() {
 		hxd_Res.set_loader(new hxd_res_Loader(new hxd_fs_EmbedFileSystem(haxe_Unserializer.run("oy9:anvil.pngty7:fpn.fntty8:room.pngty9:title.pngty9:fpn_0.pngty13:end_title.pngty14:television.pngty10:radial.pngty11:toaster.pngty10:junior.pngty11:cleaver.pngtg"))));
+		Main.seconds = 0;
+		Main.itemsJuggled = 0;
 		Main.instance = this;
-		this.changeScene(SceneName.END);
+		this.changeScene(SceneName.GAME);
 	}
 	,changeScene: function(scene) {
 		var newScene;
@@ -73704,39 +73706,51 @@ me_miltage_GameScene.prototype = $extend(h2d_Scene.prototype,{
 });
 var me_miltage_EndScreen = function() {
 	me_miltage_GameScene.call(this);
-	var font = hxd_Res.get_loader().loadCache("fpn.fnt",hxd_res_BitmapFont).toFont();
+	var font = hxd_Res.get_loader().loadCache("fpn.fnt",hxd_res_BitmapFont).toFont().clone();
 	font.resizeTo(64);
-	var font2 = font.clone();
+	var font2 = hxd_Res.get_loader().loadCache("fpn.fnt",hxd_res_BitmapFont).toFont().clone();
 	font2.resizeTo(80);
-	var tf = new h2d_Text(font,this);
-	tf.set_textAlign(h2d_Align.Center);
-	tf.posChanged = true;
-	tf.x = this.width / 2;
-	tf.smooth = true;
-	tf.set_text("You protected Junior for\n\n\nseconds\nand juggled a total of \n\n\nitems.");
-	var tf2 = new h2d_Text(font2,this);
-	tf2.set_textAlign(h2d_Align.Center);
-	tf2.posChanged = true;
-	tf2.x = this.width / 2;
-	tf2.posChanged = true;
-	tf2.y = this.height * 0.125;
-	tf2.smooth = true;
-	tf2.set_text("00");
-	var tf3 = new h2d_Text(font2,this);
-	tf3.set_textAlign(h2d_Align.Center);
-	tf3.posChanged = true;
-	tf3.x = this.width / 2;
-	tf3.posChanged = true;
-	tf3.y = this.height * 0.5;
-	tf3.smooth = true;
-	tf3.set_text("00");
-	this.replay = new me_miltage_TextButton("Try again",this);
-	var _this = this.replay;
+	this.tf = new h2d_Text(font,this);
+	this.tf.set_textAlign(h2d_Align.Center);
+	var _this = this.tf;
 	_this.posChanged = true;
 	_this.x = this.width / 2;
-	var _this1 = this.replay;
+	this.tf.smooth = true;
+	this.tf.set_text("You protected Junior for\n\n\nseconds\nand juggled a total of \n\n\nitems.");
+	this.tf.set_visible(false);
+	this.tf2 = new h2d_Text(font2,this);
+	this.tf2.set_textAlign(h2d_Align.Center);
+	var _this1 = this.tf2;
 	_this1.posChanged = true;
-	_this1.y = this.height * 0.85;
+	_this1.x = this.width / 2;
+	var _this2 = this.tf2;
+	_this2.posChanged = true;
+	_this2.y = this.height * 0.125;
+	this.tf2.smooth = true;
+	this.tf2.set_text("00");
+	this.tf2.set_visible(false);
+	this.tf3 = new h2d_Text(font2,this);
+	this.tf3.set_textAlign(h2d_Align.Center);
+	var _this3 = this.tf3;
+	_this3.posChanged = true;
+	_this3.x = this.width / 2;
+	var _this4 = this.tf3;
+	_this4.posChanged = true;
+	_this4.y = this.height * 0.5;
+	this.tf3.smooth = true;
+	this.tf3.set_text("00");
+	this.tf3.set_visible(false);
+	this.replay = new me_miltage_TextButton("Try again",this);
+	var _this5 = this.replay;
+	_this5.posChanged = true;
+	_this5.x = this.width / 2;
+	var _this6 = this.replay;
+	_this6.posChanged = true;
+	_this6.y = this.height * 0.85;
+	this.replay.set_visible(false);
+	this.waitTime = 0;
+	this.score1 = 0;
+	this.score2 = 0;
 };
 $hxClasses["me.miltage.EndScreen"] = me_miltage_EndScreen;
 me_miltage_EndScreen.__name__ = "me.miltage.EndScreen";
@@ -73800,6 +73814,19 @@ me_miltage_EndScreen.prototype = $extend(me_miltage_GameScene.prototype,{
 				Main.setCurrentScene(SceneName.GAME);
 			}
 		}
+		this.waitTime += dt;
+		this.tf.set_visible(this.waitTime >= 1);
+		this.tf2.set_visible(this.waitTime >= 2);
+		this.tf3.set_visible(this.waitTime >= 3);
+		this.replay.set_visible(this.waitTime >= 5);
+		this.tf2.set_text(Math.round(this.score1) + "");
+		this.tf3.set_text(Math.round(this.score2) + "");
+		if(this.tf2.visible && this.waitTime > 2.5) {
+			this.score1 += (Main.seconds - this.score1) / 20;
+		}
+		if(this.tf3.visible && this.waitTime > 3.5) {
+			this.score2 += (Main.itemsJuggled - this.score2) / 20;
+		}
 	}
 	,__class__: me_miltage_EndScreen
 });
@@ -73813,6 +73840,8 @@ var me_miltage_Game = function() {
 	this.spawnTime = 0;
 	this.items = [];
 	this.playing = false;
+	Main.seconds = 0;
+	Main.itemsJuggled = 0;
 	var room = new h2d_Bitmap(hxd_Res.get_loader().loadCache("room.png",hxd_res_Image).toTile(),this);
 	room.posChanged = true;
 	room.scaleX = 0.5;
@@ -73854,7 +73883,13 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 				body.setLinearVelocity(new box2D_common_math_B2Vec2(0,0));
 				body.applyImpulse(new box2D_common_math_B2Vec2(Math.random() * 4 - 2,-5),body.getWorldCenter());
 				body.applyTorque(Math.random() * 10 - 5);
-				this.playing = true;
+				if(!this.playing) {
+					this.timer = new haxe_Timer(1000);
+					this.timer.run = function() {
+						Main.seconds++;
+					};
+					this.playing = true;
+				}
 			}
 		}
 		var _g = 0;
@@ -73863,6 +73898,11 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 			var item1 = _g1[_g];
 			++_g;
 			item1.update(dt);
+			if(item1.isOnFloor(this)) {
+				Main.itemsJuggled = this.items.length;
+				this.timer.stop();
+				Main.setCurrentScene(SceneName.END);
+			}
 		}
 	}
 	,getNextType: function() {
@@ -74007,6 +74047,9 @@ me_miltage_Item.prototype = {
 			_this4.posChanged = true;
 			_this4.scaleY = val;
 		}
+	}
+	,isOnFloor: function(scene) {
+		return this.body.getWorldCenter().y * 100 > scene.height * 0.75;
 	}
 	,getTile: function() {
 		switch(this.type._hx_index) {
@@ -75614,6 +75657,10 @@ hxsl_Serializer.SIGN = 9139229;
 hxsl_SharedShader.UNROLL_LOOPS = false;
 me_miltage_Constants.PPM = 100;
 me_miltage_Constants.SPAWN_TIME = 6;
+me_miltage_EndScreen.WAIT_TIME = 1;
+me_miltage_EndScreen.WAIT_TIME_2 = 2;
+me_miltage_EndScreen.WAIT_TIME_3 = 3;
+me_miltage_EndScreen.WAIT_TIME_4 = 5;
 me_miltage_Item.HIT_TIME = 0.2;
 me_miltage_Title.ROTATION_TIME = 1000;
 me_miltage_Title.SCALE_TIME = 200;

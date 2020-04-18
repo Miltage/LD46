@@ -12,16 +12,20 @@ enum SceneName {
 class Main extends hxd.App {
 
     public static var instance:Main;
+    public static var seconds:Int;
+    public static var itemsJuggled:Int;
 
     private var currentScene:GameScene;
 
     override function init() {
         
         hxd.Res.initEmbed();
+        seconds = 0;
+        itemsJuggled = 0;
         instance = this;        
 
         // switch to new scene
-        changeScene(END);
+        changeScene(GAME);
 
     }
 

@@ -17,8 +17,8 @@ import box2D.collision.shapes.B2CircleShape;
 
 class Game extends h2d.Scene {
 
-    var world:B2World;
-    var focusedBody:B2Body;
+    private var world:B2World;
+    private var spawnTime:Float;
 
     public function new() {
         super();
@@ -36,53 +36,10 @@ class Game extends h2d.Scene {
         anim.x = 100;
         anim.y = 100;*/
 
-        world = new B2World(new B2Vec2(0, 2), true);
+        initWorld();
+        spawnTime = Constants.SPAWN_TIME;
 
-        var bxFixDef = new B2FixtureDef();
-        var bxPolygonShape = new B2PolygonShape();
-        bxPolygonShape.setAsBox(this.width / Constants.PPM, 1);
-        bxFixDef.shape = bxPolygonShape;
-
-        var bodyDef = new B2BodyDef();
-        bodyDef.type = B2BodyType.STATIC_BODY;
-        bodyDef.position.set(this.width / 2 / Constants.PPM, this.height / Constants.PPM);
-        world.createBody(bodyDef).createFixture(bxFixDef);
-
-        bxPolygonShape.setAsBox(1, this.height * 10 / Constants.PPM);
-        bodyDef.position.set(1, this.height / 2 / Constants.PPM);
-        world.createBody(bodyDef).createFixture(bxFixDef);
-
-        bxPolygonShape.setAsBox(1, this.height * 10 / Constants.PPM);
-        bodyDef.position.set(this.width / Constants.PPM - 1, this.height / 2 / Constants.PPM);
-        world.createBody(bodyDef).createFixture(bxFixDef);
-
-        var dbgDraw:B2HeapsDebugDraw = new B2HeapsDebugDraw();
-        var dbgSprite:h2d.Graphics = new Graphics(this);
-        dbgDraw.setSprite(dbgSprite);
-        dbgDraw.setDrawScale(Constants.PPM);
-        dbgDraw.setFillAlpha(0.3);
-        dbgDraw.setLineThickness(1.0);
-        dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
-
-        world.setDebugDraw(dbgDraw);
-
-        for (i in 0...5)
-        {
-            var body = new B2BodyDef();
-            body.position.set(this.width/2 / Constants.PPM - i * 0.5, 1 - i * 2);
-            body.linearDamping = 0.5;
-            body.type = DYNAMIC_BODY;
-                
-            var circle = new B2CircleShape(0.6);
-            var fixture = new B2FixtureDef();
-            fixture.density = 0.8 + i * 0.2;
-            fixture.shape = circle;
-            fixture.filter.categoryBits = 2;
-            fixture.filter.maskBits = 1;
-                
-            var player = world.createBody(body);
-            player.createFixture (fixture);
-        }
+        var item = new Item(world);
     }
 
     public function update(dt:Float)
@@ -91,35 +48,24 @@ class Game extends h2d.Scene {
         world.clearForces();
         world.drawDebugData();
 
+        if (spawnTime > 0)
+            spawnTime -= dt;
+        else
+        {
+            var item = new Item(world);
+            spawnTime = Constants.SPAWN_TIME;
+        }
+
         if (hxd.Key.isPressed(hxd.Key.MOUSE_LEFT))
         {
             lastMouse = mousePVec.copy();
             var body = getBodyAtMouse();
             if (body != null)
             {
-                //focusedBody = body;
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
             }
         }
-
-        /*if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT) && focusedBody != null)
-        {
-            //focusedBody.setActive(true);
-            var b:B2Vec2 = mousePVec.copy();
-            b.subtract(lastMouse);
-            trace(b);
-            //b.normalize();
-            b.multiply(30);
-            focusedBody.applyImpulse(b, focusedBody.getWorldCenter());
-            focusedBody = null;
-        }
-
-        if (focusedBody != null)
-        {
-            //focusedBody.setActive(false);
-            focusedBody.setPosition(mousePVec);
-        }*/
     }
 
     private var lastMouse:B2Vec2 = new B2Vec2();
@@ -155,5 +101,42 @@ class Game extends h2d.Scene {
 
         world.queryAABB(getBodyCallback, aabb);
         return body;
+    }
+
+    public function initWorld():Void
+    {
+        world = new B2World(new B2Vec2(0, 2), true);
+
+        var bxFixDef = new B2FixtureDef();
+        var bxPolygonShape = new B2PolygonShape();
+        bxPolygonShape.setAsBox(this.width / Constants.PPM, 1);
+        bxFixDef.shape = bxPolygonShape;
+
+        var bodyDef = new B2BodyDef();
+        bodyDef.type = B2BodyType.STATIC_BODY;
+
+        // floor
+        bodyDef.position.set(this.width / 2 / Constants.PPM, this.height / Constants.PPM);
+        world.createBody(bodyDef).createFixture(bxFixDef);
+
+        // left wall
+        bxPolygonShape.setAsBox(1, this.height * 10 / Constants.PPM);
+        bodyDef.position.set(1, this.height / 2 / Constants.PPM);
+        world.createBody(bodyDef).createFixture(bxFixDef);
+
+        // right wall
+        bxPolygonShape.setAsBox(1, this.height * 10 / Constants.PPM);
+        bodyDef.position.set(this.width / Constants.PPM - 1, this.height / 2 / Constants.PPM);
+        world.createBody(bodyDef).createFixture(bxFixDef);
+
+        // debug draw stuff
+        var dbgDraw:B2HeapsDebugDraw = new B2HeapsDebugDraw();
+        var dbgSprite:h2d.Graphics = new Graphics(this);
+        dbgDraw.setSprite(dbgSprite);
+        dbgDraw.setDrawScale(Constants.PPM);
+        dbgDraw.setFillAlpha(0.3);
+        dbgDraw.setLineThickness(1.0);
+        dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
+        world.setDebugDraw(dbgDraw);
     }
 }

@@ -73131,45 +73131,9 @@ var me_miltage_Game = function() {
 	this.mousePVec = new box2D_common_math_B2Vec2();
 	this.lastMouse = new box2D_common_math_B2Vec2();
 	h2d_Scene.call(this);
-	this.world = new box2D_dynamics_B2World(new box2D_common_math_B2Vec2(0,2),true);
-	var bxFixDef = new box2D_dynamics_B2FixtureDef();
-	var bxPolygonShape = new box2D_collision_shapes_B2PolygonShape();
-	bxPolygonShape.setAsBox(this.width / 100,1);
-	bxFixDef.shape = bxPolygonShape;
-	var bodyDef = new box2D_dynamics_B2BodyDef();
-	bodyDef.type = 0;
-	bodyDef.position.set(this.width / 2 / 100,this.height / 100);
-	this.world.createBody(bodyDef).createFixture(bxFixDef);
-	bxPolygonShape.setAsBox(1,this.height * 10 / 100);
-	bodyDef.position.set(1,this.height / 2 / 100);
-	this.world.createBody(bodyDef).createFixture(bxFixDef);
-	bxPolygonShape.setAsBox(1,this.height * 10 / 100);
-	bodyDef.position.set(this.width / 100 - 1,this.height / 2 / 100);
-	this.world.createBody(bodyDef).createFixture(bxFixDef);
-	var dbgDraw = new box2D_dynamics_B2HeapsDebugDraw();
-	var dbgSprite = new h2d_Graphics(this);
-	dbgDraw.setSprite(dbgSprite);
-	dbgDraw.setDrawScale(100);
-	dbgDraw.setFillAlpha(0.3);
-	dbgDraw.setLineThickness(1.0);
-	dbgDraw.setFlags(box2D_dynamics_B2DebugDraw.e_shapeBit | box2D_dynamics_B2DebugDraw.e_jointBit);
-	this.world.setDebugDraw(dbgDraw);
-	var _g = 0;
-	while(_g < 5) {
-		var i = _g++;
-		var body = new box2D_dynamics_B2BodyDef();
-		body.position.set(this.width / 2 / 100 - i * 0.5,1 - i * 2);
-		body.linearDamping = 0.5;
-		body.type = 2;
-		var circle = new box2D_collision_shapes_B2CircleShape(0.6);
-		var fixture = new box2D_dynamics_B2FixtureDef();
-		fixture.density = 0.8 + i * 0.2;
-		fixture.shape = circle;
-		fixture.filter.categoryBits = 2;
-		fixture.filter.maskBits = 1;
-		var player = this.world.createBody(body);
-		player.createFixture(fixture);
-	}
+	this.initWorld();
+	this.spawnTime = 6;
+	var item = new me_miltage_Item(this.world);
 };
 $hxClasses["me.miltage.Game"] = me_miltage_Game;
 me_miltage_Game.__name__ = "me.miltage.Game";
@@ -73179,6 +73143,12 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 		this.world.step(0.016666666666666666,3,3);
 		this.world.clearForces();
 		this.world.drawDebugData();
+		if(this.spawnTime > 0) {
+			this.spawnTime -= dt;
+		} else {
+			var item = new me_miltage_Item(this.world);
+			this.spawnTime = 6;
+		}
 		if(hxd_Key.isPressed(0)) {
 			this.lastMouse = this.mousePVec.copy();
 			var body = this.getBodyAtMouse();
@@ -73215,8 +73185,52 @@ me_miltage_Game.prototype = $extend(h2d_Scene.prototype,{
 		this.world.queryAABB(getBodyCallback,aabb);
 		return body;
 	}
+	,initWorld: function() {
+		this.world = new box2D_dynamics_B2World(new box2D_common_math_B2Vec2(0,2),true);
+		var bxFixDef = new box2D_dynamics_B2FixtureDef();
+		var bxPolygonShape = new box2D_collision_shapes_B2PolygonShape();
+		bxPolygonShape.setAsBox(this.width / 100,1);
+		bxFixDef.shape = bxPolygonShape;
+		var bodyDef = new box2D_dynamics_B2BodyDef();
+		bodyDef.type = 0;
+		bodyDef.position.set(this.width / 2 / 100,this.height / 100);
+		this.world.createBody(bodyDef).createFixture(bxFixDef);
+		bxPolygonShape.setAsBox(1,this.height * 10 / 100);
+		bodyDef.position.set(1,this.height / 2 / 100);
+		this.world.createBody(bodyDef).createFixture(bxFixDef);
+		bxPolygonShape.setAsBox(1,this.height * 10 / 100);
+		bodyDef.position.set(this.width / 100 - 1,this.height / 2 / 100);
+		this.world.createBody(bodyDef).createFixture(bxFixDef);
+		var dbgDraw = new box2D_dynamics_B2HeapsDebugDraw();
+		var dbgSprite = new h2d_Graphics(this);
+		dbgDraw.setSprite(dbgSprite);
+		dbgDraw.setDrawScale(100);
+		dbgDraw.setFillAlpha(0.3);
+		dbgDraw.setLineThickness(1.0);
+		dbgDraw.setFlags(box2D_dynamics_B2DebugDraw.e_shapeBit | box2D_dynamics_B2DebugDraw.e_jointBit);
+		this.world.setDebugDraw(dbgDraw);
+	}
 	,__class__: me_miltage_Game
 });
+var me_miltage_Item = function(world) {
+	var bodyDef = new box2D_dynamics_B2BodyDef();
+	bodyDef.position.set(1,1);
+	bodyDef.linearDamping = 0.5;
+	bodyDef.type = 2;
+	var circle = new box2D_collision_shapes_B2CircleShape(0.6);
+	var fixture = new box2D_dynamics_B2FixtureDef();
+	fixture.density = 0.8;
+	fixture.shape = circle;
+	fixture.filter.categoryBits = 2;
+	fixture.filter.maskBits = 1;
+	this.body = world.createBody(bodyDef);
+	this.body.createFixture(fixture);
+};
+$hxClasses["me.miltage.Item"] = me_miltage_Item;
+me_miltage_Item.__name__ = "me.miltage.Item";
+me_miltage_Item.prototype = {
+	__class__: me_miltage_Item
+};
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
@@ -73919,6 +73933,7 @@ hxsl_Serializer.FKIND = hxsl_FunctionKind.__empty_constructs__.slice();
 hxsl_Serializer.SIGN = 9139229;
 hxsl_SharedShader.UNROLL_LOOPS = false;
 me_miltage_Constants.PPM = 100;
+me_miltage_Constants.SPAWN_TIME = 6;
 {
 	Main.main();
 	haxe_EntryPoint.run();

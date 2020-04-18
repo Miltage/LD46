@@ -73398,8 +73398,9 @@ var me_miltage_Game = function() {
 	me_miltage_GameScene.call(this);
 	this.initWorld();
 	this.typeIndex = 0;
-	this.spawnTime = 1.5;
+	this.spawnTime = 0;
 	this.items = [];
+	this.playing = false;
 	var room = new h2d_Bitmap(hxd_Res.get_loader().loadCache("room.png",hxd_res_Image).toTile(),this);
 	room.posChanged = true;
 	room.scaleX = 0.5;
@@ -73420,13 +73421,17 @@ me_miltage_Game.__name__ = "me.miltage.Game";
 me_miltage_Game.__super__ = me_miltage_GameScene;
 me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 	update: function(dt) {
-		this.world.step(0.016666666666666666,3,3);
+		if(this.playing) {
+			this.world.step(0.016666666666666666,3,3);
+		}
 		this.world.clearForces();
 		this.world.drawDebugData();
 		if(this.spawnTime > 0) {
-			this.spawnTime -= dt;
+			if(this.playing) {
+				this.spawnTime -= dt;
+			}
 		} else {
-			var item = new me_miltage_Item(this.getNextType(),this.world,this);
+			var item = new me_miltage_Item(this.getNextType(),this.world,this,this.items.length > 0 ? 1 : 3);
 			this.items.push(item);
 			this.spawnTime = 6;
 		}
@@ -73436,6 +73441,7 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 			if(body != null) {
 				body.setLinearVelocity(new box2D_common_math_B2Vec2(0,0));
 				body.applyImpulse(new box2D_common_math_B2Vec2(Math.random() * 4 - 2,-5),body.getWorldCenter());
+				this.playing = true;
 			}
 		}
 		var _g = 0;
@@ -73516,10 +73522,13 @@ var me_miltage_ItemType = $hxEnums["me.miltage.ItemType"] = { __ename__ : true, 
 	,TELEVISION: {_hx_index:3,__enum__:"me.miltage.ItemType",toString:$estr}
 };
 me_miltage_ItemType.__empty_constructs__ = [me_miltage_ItemType.CLEAVER,me_miltage_ItemType.ANVIL,me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION];
-var me_miltage_Item = function(type,world,scene) {
+var me_miltage_Item = function(type,world,scene,startY) {
+	if(startY == null) {
+		startY = 1;
+	}
 	this.type = type;
 	var bodyDef = new box2D_dynamics_B2BodyDef();
-	bodyDef.position.set(scene.width / 2 / 100,1);
+	bodyDef.position.set(scene.width / 2 / 100,startY);
 	bodyDef.linearDamping = 0.5;
 	bodyDef.type = 2;
 	var circle = new box2D_collision_shapes_B2CircleShape(0.6);

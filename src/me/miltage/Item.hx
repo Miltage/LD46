@@ -28,11 +28,11 @@ class Item {
     private var sprite:Bitmap;
     private var hitTime:Float;
 
-    public function new(type:ItemType, world:B2World, scene:Scene) {
+    public function new(type:ItemType, world:B2World, scene:Scene, startY:Int = 1) {
         this.type = type;
 
         var bodyDef = new B2BodyDef();
-        bodyDef.position.set(scene.width/2 / Constants.PPM, 1);
+        bodyDef.position.set(scene.width/2 / Constants.PPM, startY);
         bodyDef.linearDamping = 0.5;
         bodyDef.type = DYNAMIC_BODY;
 

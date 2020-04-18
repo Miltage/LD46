@@ -28,6 +28,7 @@ class Game extends GameScene {
 
     private var world:B2World;
     private var spawnTime:Float;
+    private var playing:Bool;
 
     public function new() {
         super();
@@ -47,8 +48,9 @@ class Game extends GameScene {
 
         initWorld();
         typeIndex = 0;
-        spawnTime = Constants.SPAWN_TIME / 4;
+        spawnTime = 0;
         items = [];
+        playing = false;
 
         var room = new Bitmap(hxd.Res.room.toTile(), this);
         room.scaleX = 0.5;
@@ -63,15 +65,19 @@ class Game extends GameScene {
 
     override public function update(dt:Float)
     {
-        world.step(1 / 60,  3,  3);
+        if (playing)
+            world.step(1 / 60,  3,  3);
         world.clearForces();
         world.drawDebugData();
 
         if (spawnTime > 0)
-            spawnTime -= dt;
+        {
+            if (playing)
+                spawnTime -= dt;
+        }
         else
         {
-            var item = new Item(getNextType(), world, this);
+            var item = new Item(getNextType(), world, this, items.length > 0 ? 1 : 3);
             items.push(item);
             spawnTime = Constants.SPAWN_TIME;
         }
@@ -84,6 +90,7 @@ class Game extends GameScene {
             {
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
+                playing = true;
             }
         }
 

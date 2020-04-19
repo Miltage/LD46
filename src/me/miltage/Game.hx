@@ -32,6 +32,7 @@ class Game extends GameScene {
     private var spawnTime:Float;
     private var playing:Bool;
     private var timer:Timer;
+    private var junior:Junior;
 
     public function new() {
         super();
@@ -62,7 +63,7 @@ class Game extends GameScene {
         room.scaleX = 0.5;
         room.scaleY = 0.5;
 
-        var junior = new Bitmap(hxd.Res.junior.toTile().center(), this);
+        junior = new Junior(this);
         junior.scaleX = 0.5;
         junior.scaleY = 0.5;
         junior.x = width/2;
@@ -132,6 +133,8 @@ class Game extends GameScene {
                 Main.setCurrentScene(END);
             }
         }
+
+        junior.update(dt);
     }
 
     private function getNextType():ItemType

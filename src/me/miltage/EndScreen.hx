@@ -60,6 +60,8 @@ class EndScreen extends GameScene {
         waitTime = 0;
         score1 = 0;
         score2 = 0;
+
+        SoundManager.stopMusic();
     }
 
     override public function update(dt:Float):Void

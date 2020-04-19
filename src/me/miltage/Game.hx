@@ -70,6 +70,8 @@ class Game extends GameScene {
         dbgDraw.setLineThickness(1.0);
         dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
         //world.setDebugDraw(dbgDraw);
+
+        SoundManager.startMusic();
     }
 
     override public function update(dt:Float)

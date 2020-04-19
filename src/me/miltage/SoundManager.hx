@@ -8,6 +8,7 @@ class SoundManager {
     private static var glassSounds:Array<Sound>;
     private static var impactSounds:Array<Sound>;
     private static var babySounds:Array<Sound>;
+    private static var musicResource:Sound;
     private static var lastBabySound:Int;
 
     public static function init():Void
@@ -35,16 +36,22 @@ class SoundManager {
         babySounds.push(hxd.Res.sounds.baby5);
         babySounds.push(hxd.Res.sounds.baby6);
 
-        var musicResource:Sound = null;
         //If we support mp3 we have our sound
-        if(hxd.res.Sound.supportedFormat(Mp3)){
-            musicResource = hxd.Res.sounds.hit1;
-        }  
+        if (hxd.res.Sound.supportedFormat(Mp3))
+            musicResource = hxd.Res.sounds.music;
+        
+    }
 
-        if(musicResource != null){
-            //Play the music and loop it
-            //musicResource.play(true);
-        }
+    public static function startMusic():Void
+    {
+        if (musicResource != null)
+            musicResource.play(true, 0.5);
+    }
+
+    public static function stopMusic():Void
+    {
+        if (musicResource != null)
+            musicResource.stop();
     }
 
     public static function playHit():Void

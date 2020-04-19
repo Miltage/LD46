@@ -108,6 +108,11 @@ class SoundManager {
         hxd.Res.sounds.pop.play();
     }
 
+    public static function playChainsaw():Void
+    {
+        hxd.Res.sounds.chainsaw.play();
+    }
+
     public static function playBabyNoise():Void
     {
         if (lastBabySound == null)

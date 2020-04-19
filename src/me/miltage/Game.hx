@@ -20,7 +20,7 @@ import box2D.collision.shapes.B2PolygonShape;
 
 class Game extends GameScene {
 
-    private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, MICROWAVE, GRENADE, TOILET, CHAINSAW, ANVIL];
+    private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, CHAINSAW, MICROWAVE, GRENADE, TOILET, ANVIL];
     private var typeIndex:Int;
     private var items:Array<Item>;
     private var shadows:Graphics;
@@ -104,7 +104,9 @@ class Game extends GameScene {
                 var amount = (100 - Item.getItemSize(item.getType())) / 2;
                 body.applyTorque(Math.random() * amount - (amount/2));
                 item.onHit();
-                if (Item.isGlass(item.getType()))
+                if (item.getType() == CHAINSAW)
+                    SoundManager.playChainsaw();
+                else if (Item.isGlass(item.getType()))
                     SoundManager.playGlass();
                 else if (Item.isMetal(item.getType()))
                     SoundManager.playMetal();

@@ -137,6 +137,12 @@ class Item {
 
         if (isElectrical(type))
         {
+            lineGraphic.visible = appearTime >= APPEAR_TIME;
+            plug.visible = appearTime >= APPEAR_TIME;
+        }
+
+        if (isElectrical(type))
+        {
             for (i in 1...points.length)
             {
                 var dx = points[i].x - points[i - 1].x;

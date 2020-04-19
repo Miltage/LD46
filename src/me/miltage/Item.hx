@@ -32,6 +32,7 @@ class Item {
 
     private var points:Array<Point>;
     private var lineGraphic:Graphics;
+    private var plug:Bitmap;
 
     public function new(type:ItemType, world:B2World, scene:Scene, startY:Int = 1) {
         this.type = type;
@@ -59,6 +60,12 @@ class Item {
         body.createFixture(fixture);
         body.setUserData(this);
 
+        if (isElectrical(type))
+        {
+            plug = new Bitmap(hxd.Res.plug.toTile().center(), scene);
+            plug.scaleX = 0.5;
+            plug.scaleY = 0.5;
+        }
         sprite = new Bitmap(getTile().center(), scene);
         sprite.scaleX = 0.5;
         sprite.scaleY = 0.5;
@@ -67,7 +74,7 @@ class Item {
         setPos();
 
         points = [];
-        for (i in 0...16)
+        for (i in 0...12)
             points.push(new Point(sprite.x, sprite.y + i*5));
     }
 
@@ -110,7 +117,7 @@ class Item {
                 var dx = points[i].x - points[i - 1].x;
                 var dy = points[i].y - points[i - 1].y;
                 var dist = Math.sqrt(dx*dx + dy*dy);
-                var tf = 100;
+                var tf = 80;
                 var df = 0.98;
                 var len = 1;
                 var diff = len - dist;
@@ -124,6 +131,13 @@ class Item {
                 points[i].y += 1*dt*tf*df;
                 lineGraphic.lineTo(points[i].x, points[i].y);
             }
+            plug.x = points[points.length - 1].x;
+            plug.y = points[points.length - 1].y;
+
+            var dx = points[points.length - 1].x - sprite.x;
+            var dy = points[points.length - 1].y - sprite.y;
+            var angle = Math.atan2(dy, dx) + Math.PI*1.5;
+            plug.rotation = angle;
         }
     }
 

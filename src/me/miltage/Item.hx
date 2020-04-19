@@ -20,6 +20,10 @@ enum ItemType {
     ANVIL;
     TOASTER;
     TELEVISION;
+    GRENADE;
+    MICROWAVE;
+    TOILET;
+    CHAINSAW;
 }
 
 class Item {
@@ -51,6 +55,10 @@ class Item {
             case TOASTER: 0.8;
             case TELEVISION: 1.2;
             case ANVIL: 2.0;
+            case GRENADE: 0.4;
+            case TOILET: 1.5;
+            case MICROWAVE: 1.5;
+            case CHAINSAW: 1.0;
         };
         fixture.shape = circle;
         fixture.filter.categoryBits = 2;
@@ -165,16 +173,20 @@ class Item {
             case ANVIL: Res.anvil.toTile();
             case TELEVISION: Res.television.toTile();
             case TOASTER: Res.toaster.toTile();
+            case GRENADE: Res.grenade.toTile();
+            case TOILET: Res.toilet.toTile();
+            case CHAINSAW: Res.chainsaw.toTile();
+            case MICROWAVE: Res.microwave.toTile();
         }
     }
 
     public static function getItemSize(type:ItemType):Int
     {
         return switch (type) {
-            case TOASTER: 30;
-            case TELEVISION: 60;
-            case ANVIL: 80;
-            case CLEAVER: 20;
+            case TOASTER | CHAINSAW: 30;
+            case TELEVISION | MICROWAVE: 60;
+            case ANVIL | TOILET: 80;
+            case CLEAVER | GRENADE: 20;
             default: 30;
         }
     }
@@ -183,7 +195,7 @@ class Item {
     {
         return switch (type)
         {
-            case TOASTER | TELEVISION: true;
+            case TOASTER | TELEVISION | MICROWAVE: true;
             default: false;
         }
     }

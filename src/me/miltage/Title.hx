@@ -12,6 +12,7 @@ class Title extends GameScene {
     private var radial:Bitmap;
     private var title:Bitmap;
     private var timeElapsed:Float;
+    private var junior:Junior;
 
     public function new() {
         super();
@@ -22,7 +23,7 @@ class Title extends GameScene {
         room.scaleX = 0.5;
         room.scaleY = 0.5;
 
-        var junior = new Junior(this);
+        junior = new Junior(this);
         junior.scaleX = 0.5;
         junior.scaleY = 0.5;
         junior.x = width/2;
@@ -39,19 +40,21 @@ class Title extends GameScene {
         title.scaleY = 0.5;
         title.x = width/2;
         title.y = height/2;
+
+        SoundManager.startMusic();
     }
 
     override public function update(dt:Float)
     {
         timeElapsed += dt;
 
-        /*radial.rotation += dt/4;
-        radial.scaleX = 0.5 + Math.sin(timeElapsed) * 0.1;
-        radial.scaleY = 0.5 + Math.sin(timeElapsed) * 0.1;
+        junior.update(dt);
 
-        title.y = height/2 + Math.sin(timeElapsed * 4) * height * 0.01;*/
+        radial.rotation += dt/4;
+        radial.scaleX = 0.5 + Math.sin(timeElapsed * 2) * 0.08;
+        radial.scaleY = 0.5 + Math.sin(timeElapsed * 2) * 0.08;
 
-        radial.rotation = (timeElapsed/ROTATION_TIME).linear().lerp(0, 360);
+        title.y = height/2 + Math.sin(timeElapsed * 4) * height * 0.01;
         
         if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT))
         {

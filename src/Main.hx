@@ -27,7 +27,7 @@ class Main extends hxd.App {
         instance = this;        
 
         // switch to new scene
-        changeScene(GAME);
+        changeScene(TITLE);
 
     }
 

@@ -10,6 +10,7 @@ class SoundManager {
     private static var babySounds:Array<Sound>;
     private static var musicResource:Sound;
     private static var lastBabySound:Int;
+    private static var musicPlaying:Bool;
 
     public static function init():Void
     {
@@ -39,19 +40,22 @@ class SoundManager {
         //If we support mp3 we have our sound
         if (hxd.res.Sound.supportedFormat(Mp3))
             musicResource = hxd.Res.sounds.music;
-        
+
+        musicPlaying = false;
     }
 
     public static function startMusic():Void
     {
-        if (musicResource != null)
+        if (musicResource != null && !musicPlaying)
             musicResource.play(true, 0.5);
+        musicPlaying = true;
     }
 
     public static function stopMusic():Void
     {
         if (musicResource != null)
             musicResource.stop();
+        musicPlaying = false;
     }
 
     public static function playHit():Void

@@ -102,7 +102,7 @@ class SoundManager {
 
     public static function playPop():Void
     {
-        hxd.Res.sounds.pop.play(false, 0.75);
+        hxd.Res.sounds.pop.play();
     }
 
     public static function playBabyNoise():Void

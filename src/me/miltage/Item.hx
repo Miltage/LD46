@@ -48,7 +48,11 @@ class Item {
         bodyDef.linearDamping = 0.5;
         bodyDef.type = DYNAMIC_BODY;
 
-        var circle = new B2CircleShape(0.6);
+        var circle = new B2CircleShape(switch (type) {
+            case CLEAVER | GRENADE | TOASTER: 0.6;
+            case TELEVISION | ANVIL | TOILET | MICROWAVE: 1.0;
+            case CHAINSAW: 0.8;
+        });
         var fixture = new B2FixtureDef();
         fixture.density = switch (type) {
             case CLEAVER: 0.6;
@@ -56,8 +60,8 @@ class Item {
             case TELEVISION: 1.2;
             case ANVIL: 2.0;
             case GRENADE: 0.4;
-            case TOILET: 1.5;
-            case MICROWAVE: 1.5;
+            case TOILET: 1.2;
+            case MICROWAVE: 1.2;
             case CHAINSAW: 1.0;
         };
         fixture.shape = circle;

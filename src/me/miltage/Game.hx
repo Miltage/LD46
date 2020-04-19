@@ -60,6 +60,16 @@ class Game extends GameScene {
         shadows = new Graphics(this);
         
         instruction = new Instruction(this);
+
+        // debug draw stuff
+        var dbgDraw:B2HeapsDebugDraw = new B2HeapsDebugDraw();
+        var dbgSprite:h2d.Graphics = new Graphics(this);
+        dbgDraw.setSprite(dbgSprite);
+        dbgDraw.setDrawScale(Constants.PPM);
+        dbgDraw.setFillAlpha(0.3);
+        dbgDraw.setLineThickness(1.0);
+        dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
+        //world.setDebugDraw(dbgDraw);
     }
 
     override public function update(dt:Float)
@@ -201,14 +211,6 @@ class Game extends GameScene {
         bodyDef.position.set(this.width / Constants.PPM - 1, this.height / 2 / Constants.PPM);
         world.createBody(bodyDef).createFixture(bxFixDef);
 
-        // debug draw stuff
-        var dbgDraw:B2HeapsDebugDraw = new B2HeapsDebugDraw();
-        var dbgSprite:h2d.Graphics = new Graphics(this);
-        dbgDraw.setSprite(dbgSprite);
-        dbgDraw.setDrawScale(Constants.PPM);
-        dbgDraw.setFillAlpha(0.3);
-        dbgDraw.setLineThickness(1.0);
-        dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
-        world.setDebugDraw(dbgDraw);
+        
     }
 }

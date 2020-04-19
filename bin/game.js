@@ -73956,6 +73956,13 @@ var me_miltage_Game = function() {
 	_this3.y = this.height - 130;
 	this.shadows = new h2d_Graphics(this);
 	this.instruction = new me_miltage_Instruction(this);
+	var dbgDraw = new box2D_dynamics_B2HeapsDebugDraw();
+	var dbgSprite = new h2d_Graphics(this);
+	dbgDraw.setSprite(dbgSprite);
+	dbgDraw.setDrawScale(100);
+	dbgDraw.setFillAlpha(0.3);
+	dbgDraw.setLineThickness(1.0);
+	dbgDraw.setFlags(box2D_dynamics_B2DebugDraw.e_shapeBit | box2D_dynamics_B2DebugDraw.e_jointBit);
 };
 $hxClasses["me.miltage.Game"] = me_miltage_Game;
 me_miltage_Game.__name__ = "me.miltage.Game";
@@ -74068,14 +74075,6 @@ me_miltage_Game.prototype = $extend(me_miltage_GameScene.prototype,{
 		bxPolygonShape.setAsBox(1,this.height * 10 / 100);
 		bodyDef.position.set(this.width / 100 - 1,this.height / 2 / 100);
 		this.world.createBody(bodyDef).createFixture(bxFixDef);
-		var dbgDraw = new box2D_dynamics_B2HeapsDebugDraw();
-		var dbgSprite = new h2d_Graphics(this);
-		dbgDraw.setSprite(dbgSprite);
-		dbgDraw.setDrawScale(100);
-		dbgDraw.setFillAlpha(0.3);
-		dbgDraw.setLineThickness(1.0);
-		dbgDraw.setFlags(box2D_dynamics_B2DebugDraw.e_shapeBit | box2D_dynamics_B2DebugDraw.e_jointBit);
-		this.world.setDebugDraw(dbgDraw);
 	}
 	,__class__: me_miltage_Game
 });
@@ -74159,7 +74158,19 @@ var me_miltage_Item = function(type,world,scene,startY) {
 	bodyDef.position.set(scene.width / 2 / 100,startY);
 	bodyDef.linearDamping = 0.5;
 	bodyDef.type = 2;
-	var circle = new box2D_collision_shapes_B2CircleShape(0.6);
+	var circle;
+	switch(type._hx_index) {
+	case 0:case 2:case 4:
+		circle = 0.6;
+		break;
+	case 1:case 3:case 5:case 6:
+		circle = 1.0;
+		break;
+	case 7:
+		circle = 0.8;
+		break;
+	}
+	var circle1 = new box2D_collision_shapes_B2CircleShape(circle);
 	var fixture = new box2D_dynamics_B2FixtureDef();
 	var tmp;
 	switch(type._hx_index) {
@@ -74179,17 +74190,17 @@ var me_miltage_Item = function(type,world,scene,startY) {
 		tmp = 0.4;
 		break;
 	case 5:
-		tmp = 1.5;
+		tmp = 1.2;
 		break;
 	case 6:
-		tmp = 1.5;
+		tmp = 1.2;
 		break;
 	case 7:
 		tmp = 1.0;
 		break;
 	}
 	fixture.density = tmp;
-	fixture.shape = circle;
+	fixture.shape = circle1;
 	fixture.filter.categoryBits = 2;
 	fixture.filter.maskBits = 1;
 	this.body = world.createBody(bodyDef);

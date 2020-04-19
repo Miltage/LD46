@@ -28,6 +28,10 @@ class Junior extends h2d.Object {
         frames[1].visible = false;
         frames[2].visible = false;
 
+        frames[0].smooth = true;
+        frames[1].smooth = true;
+        frames[2].smooth = true;
+
         timeElapsed = 0;
         frameIndex = 0;
         soundTime = SOUND_INTERVAL;

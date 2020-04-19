@@ -31,7 +31,7 @@ class Item {
 
     private var body:B2Body;
     private var type:ItemType;
-    private var sprite:Bitmap;
+    private var sprite:GameSprite;
     private var hitTime:Float;
 
     private var points:Array<Point>;
@@ -55,11 +55,11 @@ class Item {
         });
         var fixture = new B2FixtureDef();
         fixture.density = switch (type) {
-            case CLEAVER: 0.6;
-            case TOASTER: 0.8;
+            case CLEAVER: 0.75;
+            case TOASTER: 1.0;
             case TELEVISION: 1.2;
             case ANVIL: 2.0;
-            case GRENADE: 0.4;
+            case GRENADE: 0.75;
             case TOILET: 1.2;
             case MICROWAVE: 1.2;
             case CHAINSAW: 1.0;
@@ -78,7 +78,7 @@ class Item {
             plug.scaleX = 0.5;
             plug.scaleY = 0.5;
         }
-        sprite = new Bitmap(getTile().center(), scene);
+        sprite = new GameSprite(getFrames(), scene);
         sprite.scaleX = 0.5;
         sprite.scaleY = 0.5;
 
@@ -168,23 +168,23 @@ class Item {
         return type;
     }
 
-    public function getSprite():Bitmap
+    public function getSprite():GameSprite
     {
         return sprite;
     }
 
-    private function getTile():Tile
+    private function getFrames():Array<Tile>
     {
         return switch (type)
         {
-            case CLEAVER: Res.cleaver.toTile();
-            case ANVIL: Res.anvil.toTile();
-            case TELEVISION: Res.television.toTile();
-            case TOASTER: Res.toaster.toTile();
-            case GRENADE: Res.grenade.toTile();
-            case TOILET: Res.toilet.toTile();
-            case CHAINSAW: Res.chainsaw.toTile();
-            case MICROWAVE: Res.microwave.toTile();
+            case CLEAVER: [Res.cleaver.toTile().center()];
+            case ANVIL: [Res.anvil.toTile().center()];
+            case TELEVISION: [Res.television1.toTile().center(), Res.television2.toTile().center(), Res.television3.toTile().center()];
+            case TOASTER: [Res.toaster.toTile().center()];
+            case GRENADE: [Res.grenade.toTile().center()];
+            case TOILET: [Res.toilet.toTile().center()];
+            case CHAINSAW: [Res.chainsaw1.toTile().center(), Res.chainsaw2.toTile().center(), Res.chainsaw3.toTile().center()];
+            case MICROWAVE: [Res.microwave.toTile().center()];
         }
     }
 

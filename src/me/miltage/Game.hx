@@ -191,8 +191,6 @@ class Game extends GameScene {
             body = body.getNext();
         }
 
-        trace(bodies.length);
-
         if (bodies.length == 0)
             return null;
 

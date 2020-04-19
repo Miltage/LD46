@@ -46,8 +46,8 @@ class SoundManager {
 
     public static function startMusic():Void
     {
-        if (musicResource != null && !musicPlaying)
-            musicResource.play(true, 0.5);
+        //if (musicResource != null && !musicPlaying)
+            //musicResource.play(true, 0.5);
         musicPlaying = true;
     }
 

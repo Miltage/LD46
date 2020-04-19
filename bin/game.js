@@ -74150,6 +74150,7 @@ var me_miltage_Item = function(type,world,scene,startY) {
 		startY = 1;
 	}
 	this.type = type;
+	this.lineGraphic = new h2d_Graphics(scene);
 	var bodyDef = new box2D_dynamics_B2BodyDef();
 	bodyDef.position.set(scene.width / 2 / 100,startY);
 	bodyDef.linearDamping = 0.5;
@@ -74186,6 +74187,24 @@ var me_miltage_Item = function(type,world,scene,startY) {
 	_this1.posChanged = true;
 	_this1.scaleY = 0.5;
 	this.hitTime = 0.2;
+	this.setPos();
+	this.points = [];
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 5));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 10));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 15));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 20));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 25));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 30));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 35));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 40));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 45));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 50));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 55));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 60));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 65));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 70));
+	this.points.push(new h2d_col_Point(this.sprite.x,this.sprite.y + 75));
 };
 $hxClasses["me.miltage.Item"] = me_miltage_Item;
 me_miltage_Item.__name__ = "me.miltage.Item";
@@ -74201,11 +74220,19 @@ me_miltage_Item.getItemSize = function(type) {
 		return 60;
 	}
 };
+me_miltage_Item.isElectrical = function(type) {
+	switch(type._hx_index) {
+	case 2:case 3:
+		return true;
+	default:
+		return false;
+	}
+};
 me_miltage_Item.prototype = {
 	onHit: function() {
 		this.hitTime = 0;
 	}
-	,update: function(dt) {
+	,setPos: function() {
 		var pos = this.body.getWorldCenter();
 		var _this = this.sprite;
 		_this.posChanged = true;
@@ -74217,17 +74244,55 @@ me_miltage_Item.prototype = {
 		var v = this.body.getAngle();
 		_this2.posChanged = true;
 		_this2.rotation = v;
+	}
+	,update: function(dt) {
+		this.setPos();
 		if(this.hitTime < 0.2) {
 			this.hitTime += dt;
 			var rate = this.hitTime / 0.2;
 			var rate1 = (rate < 0.5 ? rate : 1 - rate) * 2;
 			var val = 0.5 * (1 - rate1) + 0.58 * rate1;
-			var _this3 = this.sprite;
-			_this3.posChanged = true;
-			_this3.scaleX = val;
-			var _this4 = this.sprite;
-			_this4.posChanged = true;
-			_this4.scaleY = val;
+			var _this = this.sprite;
+			_this.posChanged = true;
+			_this.scaleX = val;
+			var _this1 = this.sprite;
+			_this1.posChanged = true;
+			_this1.scaleY = val;
+		}
+		var _this2 = this.points[0];
+		_this2.x = this.sprite.x;
+		_this2.y = this.sprite.y;
+		this.lineGraphic.clear();
+		this.lineGraphic.lineStyle(3,0);
+		var _this3 = this.lineGraphic;
+		var x = this.points[0].x;
+		var y = this.points[0].y;
+		_this3.flush();
+		_this3.addVertex(x,y,_this3.curR,_this3.curG,_this3.curB,_this3.curA,x * _this3.ma + y * _this3.mc + _this3.mx,x * _this3.mb + y * _this3.md + _this3.my);
+		if(me_miltage_Item.isElectrical(this.type)) {
+			var _g = 1;
+			var _g1 = this.points.length;
+			while(_g < _g1) {
+				var i = _g++;
+				var dx = this.points[i].x - this.points[i - 1].x;
+				var dy = this.points[i].y - this.points[i - 1].y;
+				var dist = Math.sqrt(dx * dx + dy * dy);
+				var tf = 100;
+				var df = 0.98;
+				var len = 1;
+				var diff = len - dist;
+				if(dist > len) {
+					this.points[i].x += dx / dist * diff / 2 * dt * tf * df;
+					this.points[i].y += dy / dist * diff / 2 * dt * tf * df;
+					this.points[i - 1].x -= dx / dist * diff / 2 * dt * tf * df;
+					this.points[i - 1].y -= dy / dist * diff / 2 * dt * tf * df;
+				}
+				this.points[i].y += dt * tf * df;
+				var _this4 = this.lineGraphic;
+				var x1 = this.points[i].x;
+				var y1 = this.points[i].y;
+				_this4.addVertex(x1,y1,_this4.curR,_this4.curG,_this4.curB,_this4.curA,x1 * _this4.ma + y1 * _this4.mc + _this4.mx,x1 * _this4.mb + y1 * _this4.md + _this4.my);
+			}
 		}
 	}
 	,isOnFloor: function(scene) {

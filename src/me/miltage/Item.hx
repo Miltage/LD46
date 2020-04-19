@@ -1,5 +1,6 @@
 package me.miltage;
 
+import h2d.Graphics;
 import h2d.col.Point;
 import box2D.common.math.B2Vec2;
 import hxd.Res;
@@ -29,8 +30,13 @@ class Item {
     private var sprite:Bitmap;
     private var hitTime:Float;
 
+    private var points:Array<Point>;
+    private var lineGraphic:Graphics;
+
     public function new(type:ItemType, world:B2World, scene:Scene, startY:Int = 1) {
         this.type = type;
+
+        lineGraphic = new Graphics(scene);
 
         var bodyDef = new B2BodyDef();
         bodyDef.position.set(scene.width/2 / Constants.PPM, startY);
@@ -58,6 +64,11 @@ class Item {
         sprite.scaleY = 0.5;
 
         hitTime = HIT_TIME;
+        setPos();
+
+        points = [];
+        for (i in 0...16)
+            points.push(new Point(sprite.x, sprite.y + i*5));
     }
 
     public function onHit():Void
@@ -65,12 +76,17 @@ class Item {
         hitTime = 0;
     }
 
-    public function update(dt:Float):Void
+    private function setPos():Void
     {
         var pos:B2Vec2 = body.getWorldCenter();
         sprite.x = pos.x * Constants.PPM;
         sprite.y = pos.y * Constants.PPM;
         sprite.rotation = body.getAngle();
+    }
+
+    public function update(dt:Float):Void
+    {
+        setPos();
 
         if (hitTime < HIT_TIME)
         {
@@ -79,6 +95,35 @@ class Item {
             var val = rate.yoyo(Easing.linear).lerp(0.5, 0.58);
             sprite.scaleX = val;
             sprite.scaleY = val;
+        }
+
+        points[0].set(sprite.x, sprite.y);
+
+        lineGraphic.clear();
+        lineGraphic.lineStyle(3, 0x000000);
+        lineGraphic.moveTo(points[0].x, points[0].y);
+
+        if (isElectrical(type))
+        {
+            for (i in 1...points.length)
+            {
+                var dx = points[i].x - points[i - 1].x;
+                var dy = points[i].y - points[i - 1].y;
+                var dist = Math.sqrt(dx*dx + dy*dy);
+                var tf = 100;
+                var df = 0.98;
+                var len = 1;
+                var diff = len - dist;
+                if (dist > len)
+                {
+                    points[i].x += dx/dist*diff/2*dt*tf*df;
+                    points[i].y += dy/dist*diff/2*dt*tf*df;
+                    points[i - 1].x -= dx/dist*diff/2*dt*tf*df;
+                    points[i - 1].y -= dy/dist*diff/2*dt*tf*df;
+                }
+                points[i].y += 1*dt*tf*df;
+                lineGraphic.lineTo(points[i].x, points[i].y);
+            }
         }
     }
 
@@ -117,6 +162,15 @@ class Item {
             case ANVIL: 80;
             case CLEAVER: 20;
             default: 30;
+        }
+    }
+
+    public static function isElectrical(type:ItemType):Bool
+    {
+        return switch (type)
+        {
+            case TOASTER | TELEVISION: true;
+            default: false;
         }
     }
 }

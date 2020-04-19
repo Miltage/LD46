@@ -18,12 +18,12 @@ class Instruction extends h2d.Object {
         anim.smooth = true;
         anim.scaleX = 0.7;
         anim.scaleY = 0.7;
-        anim.x = parent.width * 0.82;
+        anim.x = parent.width * 0.86;
         anim.y = parent.height * 0.54;
 
         var arrow = new Bitmap(hxd.Res.arrow.toTile().center(), this);
         arrow.smooth = true;
-        arrow.x = parent.width * 0.62;
+        arrow.x = parent.width * 0.66;
         arrow.y = parent.height * 0.57;
         arrow.scaleX = 0.75;
         arrow.scaleY = -0.75;

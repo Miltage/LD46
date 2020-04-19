@@ -73927,7 +73927,7 @@ me_miltage_EndScreen.prototype = $extend(me_miltage_GameScene.prototype,{
 var me_miltage_Game = function() {
 	this.mousePVec = new box2D_common_math_B2Vec2();
 	this.lastMouse = new box2D_common_math_B2Vec2();
-	this.types = [me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION,me_miltage_ItemType.CLEAVER,me_miltage_ItemType.ANVIL,me_miltage_ItemType.MICROWAVE,me_miltage_ItemType.GRENADE,me_miltage_ItemType.TOILET,me_miltage_ItemType.CHAINSAW];
+	this.types = [me_miltage_ItemType.TOASTER,me_miltage_ItemType.TELEVISION,me_miltage_ItemType.CLEAVER,me_miltage_ItemType.MICROWAVE,me_miltage_ItemType.GRENADE,me_miltage_ItemType.TOILET,me_miltage_ItemType.CHAINSAW,me_miltage_ItemType.ANVIL];
 	me_miltage_GameScene.call(this);
 	this.initWorld();
 	this.typeIndex = 0;
@@ -74090,13 +74090,13 @@ var me_miltage_Instruction = function(parent) {
 	anim.posChanged = true;
 	anim.scaleY = 0.7;
 	anim.posChanged = true;
-	anim.x = parent.width * 0.82;
+	anim.x = parent.width * 0.86;
 	anim.posChanged = true;
 	anim.y = parent.height * 0.54;
 	var arrow = new h2d_Bitmap(hxd_Res.get_loader().loadCache("arrow.png",hxd_res_Image).toTile().center(),this);
 	arrow.smooth = true;
 	arrow.posChanged = true;
-	arrow.x = parent.width * 0.62;
+	arrow.x = parent.width * 0.66;
 	arrow.posChanged = true;
 	arrow.y = parent.height * 0.57;
 	arrow.posChanged = true;
@@ -74310,16 +74310,15 @@ me_miltage_Item.prototype = {
 				var dy = this.points[i].y - this.points[i - 1].y;
 				var dist = Math.sqrt(dx * dx + dy * dy);
 				var tf = 80;
-				var df = 0.98;
 				var len = 1;
 				var diff = len - dist;
 				if(dist > len) {
-					this.points[i].x += dx / dist * diff / 2 * dt * tf * df;
-					this.points[i].y += dy / dist * diff / 2 * dt * tf * df;
-					this.points[i - 1].x -= dx / dist * diff / 2 * dt * tf * df;
-					this.points[i - 1].y -= dy / dist * diff / 2 * dt * tf * df;
+					this.points[i].x += dx / dist * diff / 2 * dt * tf;
+					this.points[i].y += dy / dist * diff / 2 * dt * tf;
+					this.points[i - 1].x -= dx / dist * diff / 2 * dt * tf;
+					this.points[i - 1].y -= dy / dist * diff / 2 * dt * tf;
 				}
-				this.points[i].y += dt * tf * df;
+				this.points[i].y += dt * tf;
 				var _this4 = this.lineGraphic;
 				var x1 = this.points[i].x;
 				var y1 = this.points[i].y;

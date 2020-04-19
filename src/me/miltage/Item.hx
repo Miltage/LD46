@@ -130,17 +130,16 @@ class Item {
                 var dy = points[i].y - points[i - 1].y;
                 var dist = Math.sqrt(dx*dx + dy*dy);
                 var tf = 80;
-                var df = 0.98;
                 var len = 1;
                 var diff = len - dist;
                 if (dist > len)
                 {
-                    points[i].x += dx/dist*diff/2*dt*tf*df;
-                    points[i].y += dy/dist*diff/2*dt*tf*df;
-                    points[i - 1].x -= dx/dist*diff/2*dt*tf*df;
-                    points[i - 1].y -= dy/dist*diff/2*dt*tf*df;
+                    points[i].x += dx/dist*diff/2*dt*tf;
+                    points[i].y += dy/dist*diff/2*dt*tf;
+                    points[i - 1].x -= dx/dist*diff/2*dt*tf;
+                    points[i - 1].y -= dy/dist*diff/2*dt*tf;
                 }
-                points[i].y += 1*dt*tf*df;
+                points[i].y += 1*dt*tf;
                 lineGraphic.lineTo(points[i].x, points[i].y);
             }
             plug.x = points[points.length - 1].x;

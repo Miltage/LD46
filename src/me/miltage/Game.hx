@@ -23,7 +23,7 @@ using tweenxcore.Tools;
 
 class Game extends GameScene {
 
-    private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, ANVIL, MICROWAVE, GRENADE, TOILET, CHAINSAW];
+    private var types:Array<ItemType> = [TOASTER, TELEVISION, CLEAVER, MICROWAVE, GRENADE, TOILET, CHAINSAW, ANVIL];
     private var typeIndex:Int;
     private var items:Array<Item>;
     private var shadows:Graphics;

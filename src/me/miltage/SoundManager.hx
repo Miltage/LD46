@@ -1,5 +1,6 @@
 package me.miltage;
 
+import hxd.snd.Manager;
 import hxd.res.Sound;
 
 class SoundManager {
@@ -12,6 +13,7 @@ class SoundManager {
     private static var musicResource:Sound;
     private static var lastBabySound:Int;
     private static var musicPlaying:Bool;
+    private static var muted:Bool;
 
     public static function init():Void
     {
@@ -49,6 +51,7 @@ class SoundManager {
             musicResource = hxd.Res.sounds.music;
 
         musicPlaying = false;
+        muted = false;
     }
 
     public static function startMusic():Void
@@ -114,5 +117,16 @@ class SoundManager {
             sound = Math.floor(Math.random() * babySounds.length);
         babySounds[sound].play();
         lastBabySound = sound;
+    }
+
+    public static function isMuted():Bool
+    {
+        return muted;
+    }
+
+    public static function toggleSound():Void
+    {
+        muted = !muted;
+        Manager.get().masterVolume = muted ? 0 : 1;
     }
 }

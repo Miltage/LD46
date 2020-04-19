@@ -13,13 +13,10 @@ import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
 import box2D.dynamics.B2BodyType;
-import box2D.dynamics.B2Fixture;
 import box2D.dynamics.B2FixtureDef;
 import box2D.collision.B2AABB;
 import box2D.collision.shapes.B2Shape;
 import box2D.collision.shapes.B2PolygonShape;
-
-using tweenxcore.Tools;
 
 class Game extends GameScene {
 
@@ -34,6 +31,7 @@ class Game extends GameScene {
     private var timer:Timer;
     private var junior:Junior;
     private var instruction:Instruction;
+    private var mute:MuteButton;
 
     public function new() {
         super();
@@ -60,6 +58,7 @@ class Game extends GameScene {
         shadows = new Graphics(this);
         
         instruction = new Instruction(this);
+        mute = new MuteButton(this);
 
         // debug draw stuff
         var dbgDraw:B2HeapsDebugDraw = new B2HeapsDebugDraw();
@@ -149,6 +148,7 @@ class Game extends GameScene {
         }
 
         junior.update(dt);
+        mute.update(dt, mouseX, mouseY);
     }
 
     private function getNextType():ItemType

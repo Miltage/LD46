@@ -22,7 +22,7 @@ class Title extends GameScene {
         room.scaleX = 0.5;
         room.scaleY = 0.5;
 
-        var junior = new Bitmap(hxd.Res.junior.toTile().center(), this);
+        var junior = new Junior(this);
         junior.scaleX = 0.5;
         junior.scaleY = 0.5;
         junior.x = width/2;

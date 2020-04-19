@@ -33,6 +33,7 @@ class Game extends GameScene {
     private var playing:Bool;
     private var timer:Timer;
     private var junior:Junior;
+    private var instruction:Instruction;
 
     public function new() {
         super();
@@ -70,6 +71,8 @@ class Game extends GameScene {
         junior.y = height - 130;
 
         shadows = new Graphics(this);
+        
+        instruction = new Instruction(this);
     }
 
     override public function update(dt:Float)
@@ -108,6 +111,7 @@ class Game extends GameScene {
                         Main.seconds++;
                     };
                     playing = true;
+                    instruction.visible = false;
                 }
             }
         }

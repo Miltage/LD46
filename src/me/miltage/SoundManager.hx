@@ -7,6 +7,7 @@ class SoundManager {
     private static var hitSounds:Array<Sound>;
     private static var glassSounds:Array<Sound>;
     private static var impactSounds:Array<Sound>;
+    private static var metalSounds:Array<Sound>;
     private static var babySounds:Array<Sound>;
     private static var musicResource:Sound;
     private static var lastBabySound:Int;
@@ -36,6 +37,12 @@ class SoundManager {
         babySounds.push(hxd.Res.sounds.baby4);
         babySounds.push(hxd.Res.sounds.baby5);
         babySounds.push(hxd.Res.sounds.baby6);
+
+        metalSounds = [];
+        metalSounds.push(hxd.Res.sounds.metal1);
+        metalSounds.push(hxd.Res.sounds.metal2);
+        metalSounds.push(hxd.Res.sounds.metal3);
+        metalSounds.push(hxd.Res.sounds.metal4);
 
         //If we support mp3 we have our sound
         if (hxd.res.Sound.supportedFormat(Mp3))
@@ -86,6 +93,16 @@ class SoundManager {
     public static function playImpact():Void
     {
         impactSounds[Math.floor(Math.random() * impactSounds.length)].play();
+    }
+
+    public static function playMetal():Void
+    {
+        metalSounds[Math.floor(Math.random() * metalSounds.length)].play();
+    }
+
+    public static function playPop():Void
+    {
+        hxd.Res.sounds.pop.play(false, 0.75);
     }
 
     public static function playBabyNoise():Void

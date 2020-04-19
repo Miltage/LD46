@@ -28,11 +28,13 @@ enum ItemType {
 
 class Item {
     private static inline var HIT_TIME:Float = 0.2;
+    private static inline var APPEAR_TIME:Float = 0.4;
 
     private var body:B2Body;
     private var type:ItemType;
     private var sprite:GameSprite;
     private var hitTime:Float;
+    private var appearTime:Float;
 
     private var points:Array<Point>;
     private var lineGraphic:Graphics;
@@ -83,7 +85,9 @@ class Item {
         sprite.scaleY = 0.5;
 
         hitTime = HIT_TIME;
+        appearTime = 0;
         setPos();
+        SoundManager.playPop();
 
         points = [];
         for (i in 0...12)
@@ -112,6 +116,15 @@ class Item {
             hitTime += dt;
             var rate = hitTime / HIT_TIME;
             var val = rate.yoyo(Easing.linear).lerp(0.5, 0.58);
+            sprite.scaleX = val;
+            sprite.scaleY = val;
+        }
+
+        if (appearTime < APPEAR_TIME)
+        {
+            appearTime += dt;
+            var rate = appearTime / APPEAR_TIME;
+            var val = rate.bounceOut().lerp(0, 0.5);
             sprite.scaleX = val;
             sprite.scaleY = val;
         }
@@ -213,6 +226,15 @@ class Item {
         return switch (type)
         {
             case TOILET | GRENADE | ANVIL: true;
+            default: false;
+        }
+    }
+
+    public static function isMetal(type:ItemType):Bool
+    {
+        return switch (type)
+        {
+            case MICROWAVE | CLEAVER | TOASTER: true;
             default: false;
         }
     }

@@ -107,6 +107,8 @@ class Game extends GameScene {
                 item.onHit();
                 if (Item.isGlass(item.getType()))
                     SoundManager.playGlass();
+                else if (Item.isMetal(item.getType()))
+                    SoundManager.playMetal();
                 else
                     SoundManager.playHit();
 

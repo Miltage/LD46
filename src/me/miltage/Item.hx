@@ -202,4 +202,13 @@ class Item {
             default: false;
         }
     }
+
+    public static function isGlass(type:ItemType):Bool
+    {
+        return switch (type)
+        {
+            case TOILET | GRENADE | ANVIL: true;
+            default: false;
+        }
+    }
 }

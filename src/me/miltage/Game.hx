@@ -97,10 +97,16 @@ class Game extends GameScene {
             var body = getBodyAtMouse();
             if (body != null)
             {
+                var item = cast(body.getUserData(), Item);
                 body.setLinearVelocity(new B2Vec2(0, 0));
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
-                var amount = (100 - Item.getItemSize(cast(body.getUserData(), Item).getType())) / 2;
+                var amount = (100 - Item.getItemSize(item.getType())) / 2;
                 body.applyTorque(Math.random() * amount - (amount/2));
+                if (Item.isGlass(item.getType()))
+                    SoundManager.playGlass();
+                else
+                    SoundManager.playHit();
+
                 if (!playing)
                 {
                     timer = new Timer(1000);

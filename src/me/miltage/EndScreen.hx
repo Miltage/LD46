@@ -65,18 +65,18 @@ class EndScreen extends GameScene {
     override public function update(dt:Float):Void
     {
         if (replay.getBounds().contains(new Point(mouseX, mouseY)))
-            replay.onOver();
+        {
+            if (hxd.Key.isDown(hxd.Key.MOUSE_LEFT))
+                replay.onDown();
+            else if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT))
+                Main.setCurrentScene(GAME);
+            else
+                replay.onOver();
+        }
         else
             replay.onOut();
 
-        if (hxd.Key.isDown(hxd.Key.MOUSE_LEFT) && replay.getBounds().contains(new Point(mouseX, mouseY)))
-        {
-            replay.onDown();
-        }
-        else if (hxd.Key.isReleased(hxd.Key.MOUSE_LEFT) && replay.getBounds().contains(new Point(mouseX, mouseY)))
-        {
-            Main.setCurrentScene(GAME);
-        }
+        
 
         waitTime += dt;
 

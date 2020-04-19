@@ -1,6 +1,7 @@
 import me.miltage.GameScene;
 import me.miltage.Title;
 import me.miltage.Game;
+import me.miltage.SoundManager;
 import me.miltage.EndScreen;
 
 enum SceneName {
@@ -20,6 +21,7 @@ class Main extends hxd.App {
     override function init() {
         
         hxd.Res.initEmbed();
+        SoundManager.init();
         seconds = 0;
         itemsJuggled = 0;
         instance = this;        

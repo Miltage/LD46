@@ -168,6 +168,11 @@ class Item {
         return type;
     }
 
+    public function getSprite():Bitmap
+    {
+        return sprite;
+    }
+
     private function getTile():Tile
     {
         return switch (type)

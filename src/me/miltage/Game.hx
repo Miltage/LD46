@@ -102,6 +102,7 @@ class Game extends GameScene {
                 body.applyImpulse(new B2Vec2(Math.random() * 4 - 2, -5), body.getWorldCenter());
                 var amount = (100 - Item.getItemSize(item.getType())) / 2;
                 body.applyTorque(Math.random() * amount - (amount/2));
+                item.onHit();
                 if (Item.isGlass(item.getType()))
                     SoundManager.playGlass();
                 else
@@ -168,29 +169,40 @@ class Game extends GameScene {
         var aabb:B2AABB = new B2AABB();
         aabb.lowerBound.set(mouseXWorldPhys - 0.001, mouseYWorldPhys - 0.001);
         aabb.upperBound.set(mouseXWorldPhys + 0.001, mouseYWorldPhys + 0.001);
-        var body:B2Body = null;
-        var fixture:B2Fixture;
-        
-        // Query the world for overlapping shapes.
-        function getBodyCallback(fixture:B2Fixture):Bool
+
+        var bodies:Array<B2Body> = [];
+
+        var body = world.getBodyList();
+
+        for (i in 0...world.getBodyCount() - 1)
         {
+            var fixture = body.getFixtureList();
             var shape:B2Shape = fixture.getShape();
             if (fixture.getBody().getType() != 0 || includeStatic)
             {
                 var inside:Bool = shape.testPoint(fixture.getBody().getTransform(), mousePVec);
                 if (inside)
                 {
-                    body = fixture.getBody();
-                    cast(body.getUserData(), Item).onHit();
-                    return false;
+                    bodies.push(body);
                 }
             }
-
-            return true;
+            body = body.getNext();
         }
 
-        world.queryAABB(getBodyCallback, aabb);
-        return body;
+        trace(bodies.length);
+
+        if (bodies.length == 0)
+            return null;
+
+        bodies.sort(function(a, b) {
+            var itemA = cast(a.getUserData(), Item);
+            var itemB = cast(b.getUserData(), Item);
+            var indexA = this.getChildIndex(itemA.getSprite());
+            var indexB = this.getChildIndex(itemB.getSprite());
+            return indexA < indexB ? 1 : -1;
+        });
+
+        return bodies[0];
     }
 
     public function initWorld():Void

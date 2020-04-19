@@ -9,10 +9,12 @@ class Junior extends h2d.Object {
 
     private static inline var FRAME_TIME:Float = 2.5;
     private static inline var TRANSITION_TIME:Float = 0.08;
+    private static inline var SOUND_INTERVAL:Float = 4;
 
     var frames:Array<Bitmap>;
     var frameIndex:Int;
     var timeElapsed:Float;
+    var soundTime:Float;
 
     public function new(parent:Scene)
     {
@@ -28,6 +30,7 @@ class Junior extends h2d.Object {
 
         timeElapsed = 0;
         frameIndex = 0;
+        soundTime = SOUND_INTERVAL;
     }
 
     public function update(dt:Float):Void
@@ -57,6 +60,13 @@ class Junior extends h2d.Object {
             var val = (1 - rate).cubicOut().lerp(0.5, 0.55);
             scaleX = val;
             scaleY = val;
+        }
+
+        soundTime += dt;
+        if (soundTime >= SOUND_INTERVAL)
+        {
+            SoundManager.playBabyNoise();
+            soundTime = 0;
         }
     }
 }

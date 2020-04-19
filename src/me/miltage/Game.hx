@@ -138,6 +138,8 @@ class Game extends GameScene {
                 Main.itemsJuggled = items.length;
                 timer.stop();
                 Main.setCurrentScene(END);
+                SoundManager.playScream();
+                SoundManager.playImpact();
             }
         }
 
@@ -204,7 +206,7 @@ class Game extends GameScene {
         bodyDef.type = B2BodyType.STATIC_BODY;
 
         // floor
-        bodyDef.position.set(this.width / 2 / Constants.PPM, this.height / Constants.PPM);
+        bodyDef.position.set(this.width / 2 / Constants.PPM, (this.height + 60) / Constants.PPM + 60);
         world.createBody(bodyDef).createFixture(bxFixDef);
 
         // left wall

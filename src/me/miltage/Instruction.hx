@@ -16,8 +16,8 @@ class Instruction extends h2d.Object {
         // creates an animation for these tiles
         var anim = new h2d.Anim([t1,t2,t3], this);
         anim.smooth = true;
-        anim.scaleX = 0.7;
-        anim.scaleY = 0.7;
+        anim.scaleX = 0.7 * Main.ratio;
+        anim.scaleY = 0.7 * Main.ratio;
         anim.x = parent.width * 0.86;
         anim.y = parent.height * 0.54;
 
@@ -25,8 +25,8 @@ class Instruction extends h2d.Object {
         arrow.smooth = true;
         arrow.x = parent.width * 0.66;
         arrow.y = parent.height * 0.57;
-        arrow.scaleX = 0.75;
-        arrow.scaleY = -0.75;
+        arrow.scaleX = 0.75 * Main.ratio;
+        arrow.scaleY = -0.75 * Main.ratio;
         arrow.rotation = Math.PI / 8;
 
         var t4 = hxd.Res.protect1.toTile().center();
@@ -35,8 +35,8 @@ class Instruction extends h2d.Object {
 
         var anim2 = new h2d.Anim([t4,t5,t6], this);
         anim2.smooth = true;
-        anim2.scaleX = 0.7;
-        anim2.scaleY = 0.7;
+        anim2.scaleX = 0.7 * Main.ratio;
+        anim2.scaleY = 0.7 * Main.ratio;
         anim2.x = parent.width * 0.18;
         anim2.y = parent.height * 0.55;
 
@@ -44,8 +44,8 @@ class Instruction extends h2d.Object {
         arrow2.smooth = true;
         arrow2.x = parent.width * 0.28;
         arrow2.y = parent.height * 0.73;
-        arrow2.scaleX = 0.7;
-        arrow2.scaleY = 0.7;
+        arrow2.scaleX = 0.7 * Main.ratio;
+        arrow2.scaleY = 0.7 * Main.ratio;
         arrow2.rotation = Math.PI * 1.1;
     }
 }

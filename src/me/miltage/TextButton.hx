@@ -21,7 +21,7 @@ class TextButton extends h2d.Object {
         super(parent);
 
         var font = hxd.Res.fpn.toFont().clone();
-        font.resizeTo(64);
+        font.resizeTo(Std.int(64 * Main.ratio));
 
         tf = new Text(font, this);
         tf.textAlign = Align.Center;

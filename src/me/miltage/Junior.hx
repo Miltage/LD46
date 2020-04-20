@@ -16,6 +16,8 @@ class Junior extends h2d.Object {
     var timeElapsed:Float;
     var soundTime:Float;
 
+    public var width:Float;
+
     public function new(parent:Scene)
     {
         super(parent);
@@ -32,9 +34,14 @@ class Junior extends h2d.Object {
         frames[1].smooth = true;
         frames[2].smooth = true;
 
+        width = frames[0].tile.width;
+
         timeElapsed = 0;
         frameIndex = 0;
         soundTime = SOUND_INTERVAL;
+
+        scaleX = 0.5 * Main.ratio;
+        scaleY = 0.5 * Main.ratio;
     }
 
     public function update(dt:Float):Void
@@ -54,14 +61,14 @@ class Junior extends h2d.Object {
         if (timeElapsed > FRAME_TIME - TRANSITION_TIME)
         {
             var rate = (FRAME_TIME - timeElapsed) / TRANSITION_TIME;
-            var val = (1 - rate).cubicOut().lerp(0.5, 0.55);
+            var val = (1 - rate).cubicOut().lerp(0.5 * Main.ratio, 0.55 * Main.ratio);
             scaleX = val;
             scaleY = val;
         }
         else if (timeElapsed < TRANSITION_TIME)
         {
             var rate = timeElapsed / TRANSITION_TIME;
-            var val = (1 - rate).cubicOut().lerp(0.5, 0.55);
+            var val = (1 - rate).cubicOut().lerp(0.5 * Main.ratio, 0.55 * Main.ratio);
             scaleX = val;
             scaleY = val;
         }

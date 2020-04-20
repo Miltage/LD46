@@ -15,6 +15,7 @@ class Main extends hxd.App {
     public static var instance:Main;
     public static var seconds:Int;
     public static var itemsJuggled:Int;
+    public static var ratio:Float;
 
     private var currentScene:GameScene;
 
@@ -24,11 +25,12 @@ class Main extends hxd.App {
         SoundManager.init();
         seconds = 0;
         itemsJuggled = 0;
-        instance = this;        
+        instance = this;
+
+        Main.ratio = s2d.width / 700;
 
         // switch to new scene
         changeScene(TITLE);
-
     }
 
     public function changeScene(scene:SceneName):Void

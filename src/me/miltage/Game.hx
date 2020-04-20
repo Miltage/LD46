@@ -46,14 +46,12 @@ class Game extends GameScene {
         Main.itemsJuggled = 0;
 
         var room = new Bitmap(hxd.Res.room.toTile(), this);
-        room.scaleX = 0.5;
-        room.scaleY = 0.5;
+        room.scaleY = 0.5 * Main.ratio;
+        room.scaleX = 0.5 * Main.ratio;
 
         junior = new Junior(this);
-        junior.scaleX = 0.5;
-        junior.scaleY = 0.5;
         junior.x = width/2;
-        junior.y = height - 130;
+        junior.y = height*0.825;
 
         shadows = new Graphics(this);
         

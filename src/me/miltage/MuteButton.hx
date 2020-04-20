@@ -23,8 +23,8 @@ class MuteButton extends Object {
         mute3.visible = false;
         mute2.y = -2;
 
-        scaleX = 0.5;
-        scaleY = 0.5;
+        scaleX = 0.5 * Main.ratio;
+        scaleY = 0.5 * Main.ratio;
         this.x = parent.width * 0.9;
         this.y = parent.height * 0.04;
     }

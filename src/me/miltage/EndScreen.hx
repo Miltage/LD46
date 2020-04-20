@@ -25,9 +25,9 @@ class EndScreen extends GameScene {
         super();
 
         var font = hxd.Res.fpn.toFont().clone();
-        font.resizeTo(64);
+        font.resizeTo(Std.int(64 * Main.ratio));
         var font2 = hxd.Res.fpn.toFont().clone();
-        font2.resizeTo(80);
+        font2.resizeTo(Std.int(80 * Main.ratio));
 
         tf = new Text(font, this);
         tf.textAlign = Align.Center;

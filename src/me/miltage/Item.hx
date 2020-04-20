@@ -46,7 +46,7 @@ class Item {
         lineGraphic = new Graphics(scene);
 
         var bodyDef = new B2BodyDef();
-        bodyDef.position.set(scene.width/2 / Constants.PPM, startY);
+        bodyDef.position.set(scene.width/2 / Constants.PPM, startY * Main.ratio);
         bodyDef.linearDamping = 0.5;
         bodyDef.type = DYNAMIC_BODY;
 
@@ -77,12 +77,12 @@ class Item {
         if (isElectrical(type))
         {
             plug = new Bitmap(hxd.Res.plug.toTile().center(), scene);
-            plug.scaleX = 0.5;
-            plug.scaleY = 0.5;
+            plug.scaleX = 0.5 * Main.ratio;
+            plug.scaleY = 0.5 * Main.ratio;
         }
         sprite = new GameSprite(getFrames(), scene);
-        sprite.scaleX = 0.5;
-        sprite.scaleY = 0.5;
+        sprite.scaleX = 0.5 * Main.ratio;
+        sprite.scaleY = 0.5 * Main.ratio;
 
         hitTime = HIT_TIME;
         appearTime = 0;
@@ -115,7 +115,7 @@ class Item {
         {
             hitTime += dt;
             var rate = hitTime / HIT_TIME;
-            var val = rate.yoyo(Easing.linear).lerp(0.5, 0.58);
+            var val = rate.yoyo(Easing.linear).lerp(0.5 * Main.ratio, 0.58 * Main.ratio);
             sprite.scaleX = val;
             sprite.scaleY = val;
         }
@@ -124,7 +124,7 @@ class Item {
         {
             appearTime += dt;
             var rate = appearTime / APPEAR_TIME;
-            var val = rate.bounceOut().lerp(0, 0.5);
+            var val = rate.bounceOut().lerp(0 * Main.ratio, 0.5 * Main.ratio);
             sprite.scaleX = val;
             sprite.scaleY = val;
         }
